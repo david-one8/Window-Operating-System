@@ -1,4 +1,4 @@
-// Desktop Environment Management
+// Desktop Environment Management - desktop environment manage kar rahe hai
 class DesktopManager {
     constructor() {
         this.icons = [];
@@ -16,7 +16,7 @@ class DesktopManager {
     }
 
     loadIcons() {
-        // Always ensure all default apps are present
+        // Always ensure all default apps are present - hamesha ensure karte hai ki saare default apps present hai
         const defaultIcons = [
             { id: 'notepad', name: 'Notepad', icon: '📝', app: 'notepad', x: 0, y: 0 },
             { id: 'explorer', name: 'File Explorer', icon: '📁', app: 'fileexplorer', x: 0, y: 1 },
@@ -27,7 +27,7 @@ class DesktopManager {
             { id: 'recyclebin', name: 'Recycle Bin', icon: '🗑️', app: 'recyclebin', x: 1, y: 2 }
         ];
         this.icons = window.storage.getDesktopIcons();
-        // Add any missing default icons
+        // Add any missing default icons - koi bhi missing default icons add karte hai
         defaultIcons.forEach(defIcon => {
             if (!this.icons.some(icon => icon.id === defIcon.id)) {
                 this.icons.push({ ...defIcon });
@@ -64,7 +64,7 @@ class DesktopManager {
             <div class="icon-label">${icon.name}</div>
         `;
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         element.addEventListener('click', (e) => this.handleIconClick(e, icon));
         element.addEventListener('dblclick', (e) => this.handleIconDoubleClick(e, icon));
         element.addEventListener('mousedown', (e) => this.handleIconMouseDown(e, icon, element));
@@ -89,7 +89,7 @@ class DesktopManager {
     }
 
     handleIconMouseDown(e, icon, element) {
-        if (e.button !== 0) return; // Only left mouse button
+        if (e.button !== 0) return; // Only left mouse button - sirf left mouse button
         
         this.draggedIcon = {
             icon: icon,
@@ -109,9 +109,8 @@ class DesktopManager {
 
         const { element, startX, startY } = this.draggedIcon;
         const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-
-        // Start dragging if moved enough
+        const deltaY = e.clientY - startY;        
+        // Start dragging if moved enough - agar kaafi move ho gaya hai to dragging start karte hai
         if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
             element.classList.add('dragging');
             element.style.position = 'fixed';
@@ -128,16 +127,15 @@ class DesktopManager {
         const { icon, element } = this.draggedIcon;
         
         if (element.classList.contains('dragging')) {
-            // Calculate new grid position
+            // Calculate new grid position - naya grid position calculate karte hai
             const container = document.getElementById('desktopIcons');
             const containerRect = container.getBoundingClientRect();
             const x = Math.floor((e.clientX - containerRect.left) / this.gridSize);
-            const y = Math.floor((e.clientY - containerRect.top) / this.gridSize);
-
-            // Update icon position
+            const y = Math.floor((e.clientY - containerRect.top) / this.gridSize);            
+            // Update icon position - icon position update karte hai
             this.updateIconPosition(icon.id, x, y);
 
-            // Reset element styles
+            // Reset element styles - element styles reset karte hai
             element.classList.remove('dragging');
             element.style.position = '';
             element.style.left = '';
@@ -189,7 +187,7 @@ class DesktopManager {
         if (window.windowManager) {
             window.windowManager.openApp(appName, icon);
             
-            // Add to recent apps
+            // Add to recent apps - recent apps mein add karte hai
             window.storage.addRecentApp({
                 id: icon.id,
                 name: icon.name,
@@ -230,7 +228,7 @@ class DesktopManager {
         document.body.appendChild(menu);
         this.contextMenu = menu;
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         menu.addEventListener('click', (e) => {
             const action = e.target.closest('.context-item')?.dataset.action;
             if (action) {
@@ -305,11 +303,10 @@ class DesktopManager {
                     </div>
                 </div>
             </div>
-        `;
-
+        `;        
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.onclick = (e) => {
             if (e.target === modal) modal.remove();
@@ -320,23 +317,21 @@ class DesktopManager {
         const desktop = document.getElementById('desktop');
         if (!desktop) return;
 
-        // Desktop click
+        // Desktop click - desktop click handle kar rahe hai
         desktop.addEventListener('click', (e) => {
             if (e.target === desktop) {
                 this.clearSelection();
                 this.hideContextMenu();
             }
-        });
-
-        // Desktop context menu
+        });        
+        // Desktop context menu - desktop context menu setup kar rahe hai
         desktop.addEventListener('contextmenu', (e) => {
             if (e.target === desktop) {
                 e.preventDefault();
                 this.showDesktopContextMenu(e);
             }
-        });
-
-        // Keyboard shortcuts
+        });        
+        // Keyboard shortcuts - keyboard shortcuts setup kar rahe hai
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Delete' && this.selectedIcons.length > 0) {
                 this.deleteSelectedIcons();
@@ -358,7 +353,7 @@ class DesktopManager {
         menu.classList.remove('hidden');
         this.contextMenu = menu;
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         menu.addEventListener('click', (e) => {
             const action = e.target.closest('.context-item')?.dataset.action;
             if (action) {
@@ -366,7 +361,7 @@ class DesktopManager {
             }
         });
 
-        // Close on outside click
+        // Close on outside click - bahar click karne par close kar dete hai
         setTimeout(() => {
             document.addEventListener('click', this.hideContextMenu.bind(this), { once: true });
         }, 0);
@@ -394,7 +389,7 @@ class DesktopManager {
         this.loadIcons();
         this.renderIcons();
         
-        // Show notification
+        // Show notification - notification dikhate hai
         if (window.notificationManager) {
             window.notificationManager.show({
                 title: 'Desktop',
@@ -407,7 +402,7 @@ class DesktopManager {
     createNewFolder(e) {
         const name = prompt('Enter folder name:', 'New Folder');
         if (name && name.trim()) {
-            // Calculate grid position from click
+            // Calculate grid position from click - click se grid position calculate karte hai
             const container = document.getElementById('desktopIcons');
             const containerRect = container.getBoundingClientRect();
             const x = Math.floor((e.clientX - containerRect.left) / this.gridSize);
@@ -471,7 +466,7 @@ class DesktopManager {
     }
 
     addIcon(icon) {
-        // Find empty position
+        // Find empty position - empty position dhundte hai
         const usedPositions = new Set();
         this.icons.forEach(existingIcon => {
             usedPositions.add(`${existingIcon.x},${existingIcon.y}`);
@@ -498,7 +493,7 @@ class DesktopManager {
     }
 }
 
-// Initialize desktop manager when DOM is loaded
+// Initialize desktop manager when DOM is loaded - DOM load hone par desktop manager initialize karte hai
 document.addEventListener('DOMContentLoaded', () => {
     window.desktopManager = new DesktopManager();
 });

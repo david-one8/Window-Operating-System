@@ -1,4 +1,4 @@
-// Notepad Application
+// Notepad Application - notepad ka application hai ye
 class NotepadApp {
     constructor(container, appData = {}) {
         this.container = container;
@@ -41,14 +41,14 @@ class NotepadApp {
     }
 
     setupEventListeners() {
-        // Toolbar buttons
+        // Toolbar buttons - toolbar buttons setup kar rahe hai
         this.container.querySelectorAll('.notepad-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.handleToolbarAction(btn.dataset.action);
             });
         });
 
-        // Editor events
+        // Editor events - editor events setup kar rahe hai
         const editor = this.container.querySelector('.notepad-editor');
         if (editor) {
             editor.addEventListener('input', () => {
@@ -68,7 +68,7 @@ class NotepadApp {
             });
         }
 
-        // Keyboard shortcuts
+        // Keyboard shortcuts - keyboard shortcuts setup kar rahe hai
         this.container.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key) {
@@ -102,7 +102,7 @@ class NotepadApp {
     }
 
     loadContent() {
-        // Load content from file path if provided
+        // Load content from file path if provided - agar file path diya hai toh content load kar rahe hai
         if (this.appData.filePath) {
             const content = window.fileSystem.readFile(this.appData.filePath);
             if (content !== null) {
@@ -111,7 +111,7 @@ class NotepadApp {
                 this.updateTitle();
             }
         } else {
-            // Load last session content
+            // Load last session content - last session ka content load kar rahe hai
             const savedContent = window.storage.getAppData('notepad');
             if (savedContent.content) {
                 this.setContent(savedContent.content);
@@ -160,7 +160,7 @@ class NotepadApp {
     }
 
     handleKeyDown(e) {
-        // Handle tab key
+        // Handle tab key - tab key handle kar rahe hai
         if (e.key === 'Tab') {
             e.preventDefault();
             const editor = e.target;
@@ -189,13 +189,13 @@ class NotepadApp {
     }
 
     openFile() {
-        // Show file picker dialog
+        // Show file picker dialog - file picker dialog dikhate hai
         this.showFileDialog('open');
     }
 
     saveFile() {
         if (this.currentFile) {
-            // Save to existing file
+            // Save to existing file - existing file mein save kar rahe hai
             if (window.fileSystem.writeFile(this.currentFile, this.content)) {
                 this.isModified = false;
                 this.updateTitle();
@@ -204,7 +204,7 @@ class NotepadApp {
                 this.showNotification('Failed to save file', 'error');
             }
         } else {
-            // Save as new file
+            // Save as new file - nayi file mein save kar rahe hai
             this.saveAsFile();
         }
     }
@@ -246,7 +246,7 @@ class NotepadApp {
 
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         const closeBtn = modal.querySelector('.modal-close');
         const cancelBtn = modal.querySelector('.btn-cancel');
         const actionBtn = modal.querySelector('.btn-action');
@@ -260,7 +260,7 @@ class NotepadApp {
             if (e.target === modal) closeModal();
         };
 
-        // File list interactions
+        // File list interactions - file list interactions setup kar rahe hai
         modal.querySelectorAll('.file-item').forEach(item => {
             item.addEventListener('click', () => {
                 if (item.dataset.type === 'file') {
@@ -288,7 +288,7 @@ class NotepadApp {
             closeModal();
         };
 
-        // Focus name input
+        // Focus name input - name input pe focus kar rahe hai
         nameInput.focus();
         nameInput.select();
     }
@@ -327,7 +327,7 @@ class NotepadApp {
                 this.showNotification('Failed to open file', 'error');
             }
         } else {
-            // Save mode
+            // Save mode - save mode hai
             if (window.fileSystem.writeFile(filePath, this.content)) {
                 this.currentFile = filePath;
                 this.isModified = false;
@@ -421,7 +421,7 @@ class NotepadApp {
             }
         }
 
-        // Update status bar
+        // Update status bar - status bar update kar rahe hai
         const statusFile = this.container.querySelector('.status-file');
         if (statusFile) {
             statusFile.textContent = this.currentFile ? 
@@ -453,7 +453,7 @@ class NotepadApp {
     }
 
     saveSession() {
-        // Save current content to localStorage for session recovery
+        // Save current content to localStorage for session recovery - session recovery ke liye current content localStorage mein save kar rahe hai
         window.storage.saveAppData('notepad', {
             content: this.content,
             currentFile: this.currentFile,
@@ -473,5 +473,5 @@ class NotepadApp {
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.NotepadApp = NotepadApp;

@@ -1,4 +1,4 @@
-// Notification Management System
+// Notification Management System - notification management system hai ye
 class NotificationManager {
     constructor() {
         this.notifications = [];
@@ -14,7 +14,7 @@ class NotificationManager {
     }
 
     loadNotifications() {
-        // Only load notifications from this session (clear on refresh)
+        // Only load notifications from this session (clear on refresh) - sirf is session ke notifications load karte hai (refresh par clear ho jate hai)
         this.notifications = [];
         this.saveNotifications();
     }
@@ -24,29 +24,27 @@ class NotificationManager {
     }
 
     setupEventListeners() {
-        // Notification center toggle
+        // Notification center toggle - notification center toggle setup kar rahe hai
         const notificationIcon = document.getElementById('notificationIcon');
         const notificationCenter = document.getElementById('notificationCenter');
         if (notificationIcon) {
             notificationIcon.addEventListener('click', () => {
                 this.toggle();
             });
-        }
-
-        // Clear all notifications
+        }        
+        // Clear all notifications - saare notifications clear karte hai
         const clearButton = document.getElementById('clearNotifications');
         if (clearButton) {
             clearButton.addEventListener('click', () => {
                 this.clearAll();
             });
-        }
-
-        // Quick settings
+        }        
+        // Quick settings - quick settings setup kar rahe hai
         this.setupQuickSettings();
 
-        // Close on outside click
+        // Close on outside click - bahar click par close kar dete hai
         document.addEventListener('click', (e) => {
-            // Defensive: check if elements exist
+            // Defensive: check if elements exist - defensive: check karte hai ki elements exist karte hai ya nahi
             const notificationCenter = document.getElementById('notificationCenter');
             const notificationIcon = document.getElementById('notificationIcon');
             if (!notificationCenter || !notificationIcon) return;
@@ -59,16 +57,15 @@ class NotificationManager {
     }
 
     setupQuickSettings() {
-        // Theme toggle
+        // Theme toggle - theme toggle setup kar rahe hai
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
                 window.themeManager.toggleTheme();
                 this.updateQuickSettings();
             });
-        }
-
-        // WiFi toggle
+        }        
+        // WiFi toggle - wifi toggle setup kar rahe hai
         const wifiToggle = document.getElementById('wifiToggle');
         if (wifiToggle) {
             wifiToggle.addEventListener('click', () => {
@@ -82,9 +79,8 @@ class NotificationManager {
                     type: 'info'
                 });
             });
-        }
-
-        // Bluetooth toggle
+        }        
+        // Bluetooth toggle - bluetooth toggle setup kar rahe hai
         const bluetoothToggle = document.getElementById('bluetoothToggle');
         if (bluetoothToggle) {
             bluetoothToggle.addEventListener('click', () => {
@@ -98,9 +94,8 @@ class NotificationManager {
                     type: 'info'
                 });
             });
-        }
-
-        // Focus toggle
+        }        
+        // Focus toggle - focus toggle setup kar rahe hai
         const focusToggle = document.getElementById('focusToggle');
         if (focusToggle) {
             focusToggle.addEventListener('click', () => {
@@ -114,9 +109,8 @@ class NotificationManager {
                     type: 'info'
                 });
             });
-        }
-
-        // Volume slider
+        }        
+        // Volume slider - volume slider setup kar rahe hai
         const volumeSlider = document.getElementById('volumeSlider');
         if (volumeSlider) {
             volumeSlider.addEventListener('input', (e) => {
@@ -125,9 +119,8 @@ class NotificationManager {
                     window.taskbarManager.updateVolumeStatus();
                 }
             });
-        }
-
-        // Brightness slider
+        }        
+        // Brightness slider - brightness slider setup kar rahe hai
         const brightnessSlider = document.getElementById('brightnessSlider');
         if (brightnessSlider) {
             brightnessSlider.addEventListener('input', (e) => {
@@ -140,7 +133,7 @@ class NotificationManager {
     updateQuickSettings() {
         const settings = window.storage.getSettings();
         
-        // Update theme toggle
+        // Update theme toggle - theme toggle update karte hai
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.classList.toggle('active', settings.theme === 'dark');
@@ -158,12 +151,11 @@ class NotificationManager {
             icon: notification.icon || this.getTypeIcon(notification.type),
             duration: notification.duration || 5000,
             persistent: notification.persistent || false
-        };
-
-        // Add to notifications array
+        };        
+        // Add to notifications array - notifications array mein add karte hai
         this.notifications.unshift(newNotification);
         
-        // Limit notifications
+        // Limit notifications - notifications limit karte hai
         if (this.notifications.length > this.maxNotifications) {
             this.notifications = this.notifications.slice(0, this.maxNotifications);
         }
@@ -185,7 +177,7 @@ class NotificationManager {
     }
 
     showToast(notification) {
-        // Create toast notification
+        // Create toast notification - toast notification banate hai
         const toast = document.createElement('div');
         toast.className = `toast toast-${notification.type}`;
         toast.innerHTML = `
@@ -195,9 +187,8 @@ class NotificationManager {
                 <div class="toast-message">${notification.message}</div>
             </div>
             <button class="toast-close">×</button>
-        `;
-
-        // Position toast
+        `;        
+        // Position toast - toast position karte hai
         toast.style.position = 'fixed';
         toast.style.top = '20px';
         toast.style.right = '20px';
@@ -212,24 +203,21 @@ class NotificationManager {
         toast.style.alignItems = 'center';
         toast.style.gap = 'var(--spacing-sm)';
         toast.style.maxWidth = '400px';
-        toast.style.animation = 'slideInRight var(--transition-medium)';
-
+        toast.style.animation = 'slideInRight var(--transition-medium)';        
         document.body.appendChild(toast);
 
-        // Close button
+        // Close button - close button setup kar rahe hai
         const closeBtn = toast.querySelector('.toast-close');
         closeBtn.addEventListener('click', () => {
             this.hideToast(toast);
-        });
-
-        // Auto-hide if not persistent
+        });        
+        // Auto-hide if not persistent - agar persistent nahi hai to auto-hide kar dete hai
         if (!notification.persistent) {
             setTimeout(() => {
                 this.hideToast(toast);
             }, notification.duration);
-        }
-
-        // Click to open notification center
+        }        
+        // Click to open notification center - click karke notification center kholte hai
         toast.addEventListener('click', (e) => {
             if (e.target !== closeBtn) {
                 this.open();
@@ -268,9 +256,8 @@ class NotificationManager {
                 <div class="notification-time">${this.formatTime(notification.timestamp)}</div>
                 <button class="notification-delete" title="Delete">🗑️</button>
             </div>
-        `).join('');
-
-        // Add click handlers for delete
+        `).join('');        
+        // Add click handlers for delete - delete ke liye click handlers add karte hai
         container.querySelectorAll('.notification-delete').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -279,9 +266,8 @@ class NotificationManager {
                 console.log('Delete button clicked for notification id:', id); // Debug log
                 this.remove(id);
             });
-        });
-
-        // Add click handlers for notification items (optional: open or mark as read)
+        });        
+        // Add click handlers for notification items (optional: open or mark as read) - notification items ke liye click handlers add karte hai (optional: open ya mark as read)
         container.querySelectorAll('.notification-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 if (!e.target.classList.contains('notification-delete')) {
@@ -307,7 +293,7 @@ class NotificationManager {
     }
 
     handleNotificationClick(id) {
-        // Handle notification click - could open related app or perform action
+        // Handle notification click - could open related app or perform action - notification click handle karte hai - related app khol sakte hai ya action perform kar sakte hai
         const notification = this.notifications.find(n => n.id === id);
         if (notification) {
             console.log('Notification clicked:', notification);
@@ -339,15 +325,13 @@ class NotificationManager {
 
     updateNotificationBadge() {
         const notificationIcon = document.getElementById('notificationIcon');
-        if (!notificationIcon) return;
-
-        // Remove existing badge
+        if (!notificationIcon) return;        
+        // Remove existing badge - existing badge remove karte hai
         const existingBadge = notificationIcon.querySelector('.notification-badge');
         if (existingBadge) {
             existingBadge.remove();
-        }
-
-        // Add badge if there are unread notifications
+        }        
+        // Add badge if there are unread notifications - agar unread notifications hai to badge add karte hai
         if (this.notifications.length > 0) {
             let badge = document.createElement('div');
             badge.className = 'notification-badge';
@@ -393,9 +377,8 @@ class NotificationManager {
             notificationCenter.classList.remove('active');
             this.isOpen = false;
         }
-    }
-
-    // System notification methods
+    }    
+    // System notification methods - system notification methods hai ye
     showSystemNotification(title, message, type = 'info') {
         this.show({
             title: title,
@@ -436,11 +419,11 @@ class NotificationManager {
     }
 }
 
-// Initialize notification manager when DOM is loaded
+// Initialize notification manager when DOM is loaded - DOM load hone par notification manager initialize karte hai
 document.addEventListener('DOMContentLoaded', () => {
     window.notificationManager = new NotificationManager();
     
-    // Show welcome notification
+    // Show welcome notification - welcome notification dikhate hai
     setTimeout(() => {
         window.notificationManager.show({
             title: 'Welcome to Windows 11 Clone',

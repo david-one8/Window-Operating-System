@@ -1,4 +1,4 @@
-// Window Management System
+// Window Management System - window management system hai ye
 class WindowManager {
     constructor() {
         this.windows = new Map();
@@ -19,17 +19,17 @@ class WindowManager {
     }
 
     setupEventListeners() {
-        // Global mouse events for dragging and resizing
+        // Global mouse events for dragging and resizing - dragging aur resizing ke liye global mouse events setup kar rahe hai
         document.addEventListener('mousemove', this.handleMouseMove.bind(this));
         document.addEventListener('mouseup', this.handleMouseUp.bind(this));
         
-        // Keyboard shortcuts
+        // Keyboard shortcuts - keyboard shortcuts setup kar rahe hai
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
 
     loadWindowStates() {
         const states = window.storage.getWindowStates();
-        // Restore window positions and sizes if needed
+        // Restore window positions and sizes if needed - agar zarurat ho to window positions aur sizes restore karte hai
         this.windowStates = states;
     }
 
@@ -53,16 +53,15 @@ class WindowManager {
         const windowId = this.generateWindowId();
         const windowElement = this.createWindow(windowId, appName, appData);
         
-        // Add to taskbar
+        // Add to taskbar - taskbar mein add karte hai
         if (window.taskbarManager) {
             window.taskbarManager.addApp(appData.id || appName, appData);
             window.taskbarManager.addWindow(appData.id || appName, windowId);
-        }
-
-        // Initialize app content
+        }        
+        // Initialize app content - app content initialize karte hai
         this.initializeApp(windowElement, appName, appData);
         
-        // Focus the new window
+        // Focus the new window - naye window ko focus karte hai
         this.focusWindow(windowId);
         
         return windowId;
@@ -79,9 +78,8 @@ class WindowManager {
         const windowElement = document.createElement('div');
         windowElement.className = 'window opening';
         windowElement.dataset.windowId = windowId;
-        windowElement.dataset.appName = appName;
-
-        // Default window size and position
+        windowElement.dataset.appName = appName;        
+        // Default window size and position - default window size aur position set karte hai
         const defaultWidth = 800;
         const defaultHeight = 600;
         const x = Math.max(0, (window.innerWidth - defaultWidth) / 2 + (this.windows.size * 30));
@@ -91,9 +89,8 @@ class WindowManager {
         windowElement.style.height = defaultHeight + 'px';
         windowElement.style.left = x + 'px';
         windowElement.style.top = y + 'px';
-        windowElement.style.zIndex = ++this.zIndex;
-
-        // Window structure
+        windowElement.style.zIndex = ++this.zIndex;        
+        // Window structure - window structure banate hai
         windowElement.innerHTML = `
             <div class="window-header">
                 <div class="window-icon">${appData.icon || '📄'}</div>
@@ -112,7 +109,7 @@ class WindowManager {
 
         container.appendChild(windowElement);
 
-        // Store window data
+        // Store window data - window data store karte hai
         this.windows.set(windowId, {
             element: windowElement,
             appName: appName,
@@ -120,9 +117,8 @@ class WindowManager {
             isMaximized: false,
             isMinimized: false,
             originalBounds: null
-        });
-
-        // Setup window event listeners
+        });        
+        // Setup window event listeners - window event listeners setup karte hai
         this.setupWindowEventListeners(windowElement, windowId);
 
         return windowElement;
@@ -144,23 +140,20 @@ class WindowManager {
     setupWindowEventListeners(windowElement, windowId) {
         const header = windowElement.querySelector('.window-header');
         const controls = windowElement.querySelectorAll('.window-control');
-        const resizeHandles = windowElement.querySelectorAll('.resize-handle');
-
-        // Header dragging
+        const resizeHandles = windowElement.querySelectorAll('.resize-handle');        
+        // Header dragging - header dragging setup kar rahe hai
         header.addEventListener('mousedown', (e) => {
             if (e.target === header || e.target.classList.contains('window-icon') || e.target.classList.contains('window-title')) {
                 this.startDragging(e, windowId);
             }
-        });
-
-        // Double-click to maximize/restore
+        });        
+        // Double-click to maximize/restore - double-click se maximize/restore karte hai
         header.addEventListener('dblclick', (e) => {
             if (e.target === header || e.target.classList.contains('window-title')) {
                 this.toggleMaximize(windowId);
             }
-        });
-
-        // Window controls
+        });        
+        // Window controls - window controls setup kar rahe hai
         controls.forEach(control => {
             control.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -172,16 +165,14 @@ class WindowManager {
                     this.handleWindowControl(windowId, action);
                 }
             });
-        });
-
-        // Resize handles
+        });        
+        // Resize handles - resize handles setup kar rahe hai
         resizeHandles.forEach(handle => {
             handle.addEventListener('mousedown', (e) => {
                 this.startResizing(e, windowId, handle.classList[1]);
             });
-        });
-
-        // Focus on click
+        });        
+        // Focus on click - click par focus karte hai
         windowElement.addEventListener('mousedown', () => {
             this.focusWindow(windowId);
         });
@@ -297,7 +288,7 @@ class WindowManager {
 
         const element = windowData.element;
         
-        // Store original bounds
+        // Store original bounds - original bounds store karte hai
         windowData.originalBounds = {
             x: parseInt(element.style.left),
             y: parseInt(element.style.top),
@@ -306,9 +297,8 @@ class WindowManager {
         };
 
         element.classList.add('maximized');
-        windowData.isMaximized = true;
-
-        // Update maximize button
+        windowData.isMaximized = true;        
+        // Update maximize button - maximize button update karte hai
         const maximizeBtn = element.querySelector('.window-control.maximize');
         if (maximizeBtn) {
             maximizeBtn.classList.remove('maximize');
@@ -331,9 +321,8 @@ class WindowManager {
         element.style.height = bounds.height + 'px';
 
         windowData.isMaximized = false;
-        windowData.originalBounds = null;
-
-        // Update restore button back to maximize
+        windowData.originalBounds = null;        
+        // Update restore button back to maximize - restore button ko wapas maximize mein change karte hai
         const restoreBtn = element.querySelector('.window-control.restore');
         if (restoreBtn) {
             restoreBtn.classList.remove('restore');
@@ -368,19 +357,16 @@ class WindowManager {
 
     focusWindow(windowId) {
         const windowData = this.windows.get(windowId);
-        if (!windowData) return;
-
-        // Remove focus from all windows
+        if (!windowData) return;        
+        // Remove focus from all windows - saare windows se focus remove karte hai
         this.windows.forEach((data) => {
             data.element.classList.remove('focused');
-        });
-
-        // Focus the target window
+        });        
+        // Focus the target window - target window ko focus karte hai
         const element = windowData.element;
         element.classList.add('focused');
-        element.style.zIndex = ++this.zIndex;
-
-        // Update taskbar
+        element.style.zIndex = ++this.zIndex;        
+        // Update taskbar - taskbar update karte hai
         if (window.taskbarManager) {
             window.taskbarManager.updateTaskbarApps();
         }
@@ -730,7 +716,7 @@ class WindowManager {
     }
 }
 
-// Initialize window manager when DOM is loaded
+// Initialize window manager when DOM is loaded - DOM load hone par window manager initialize karte hai
 document.addEventListener('DOMContentLoaded', () => {
     window.windowManager = new WindowManager();
 });

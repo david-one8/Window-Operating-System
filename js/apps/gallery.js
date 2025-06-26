@@ -1,4 +1,4 @@
-// Gallery Application
+// Gallery Application - gallery ka application hai ye
 class GalleryApp {
     constructor(container, appData = {}) {
         this.container = container;
@@ -6,7 +6,7 @@ class GalleryApp {
         this.currentFolder = appData.startPath || '/Pictures';
         this.images = [];
         this.currentImageIndex = 0;
-        this.viewMode = 'grid'; // 'grid' or 'slideshow'
+        this.viewMode = 'grid'; // 'grid' or 'slideshow' - grid ya slideshow view mode hai
         this.init();
     }
 
@@ -33,10 +33,10 @@ class GalleryApp {
                 </div>
                 
                 <div class="gallery-content" id="galleryContent">
-                    <!-- Content will be loaded here -->
+                    <!-- Content will be loaded here - content yahan load hoga -->
                 </div>
                 
-                <!-- Slideshow Modal -->
+                <!-- Slideshow Modal - slideshow modal hai ye -->
                 <div class="slideshow-modal hidden" id="slideshowModal">
                     <div class="slideshow-controls">
                         <button class="slideshow-btn" id="prevBtn">⬅️</button>
@@ -56,28 +56,28 @@ class GalleryApp {
     }
 
     setupEventListeners() {
-        // Navigation
+        // Navigation - navigation setup kar rahe hai
         this.container.querySelector('#backBtn').addEventListener('click', () => this.goBack());
         this.container.querySelector('#refreshBtn').addEventListener('click', () => this.refresh());
 
-        // View controls
+        // View controls - view controls setup kar rahe hai
         this.container.querySelector('#gridViewBtn').addEventListener('click', () => this.setViewMode('grid'));
         this.container.querySelector('#slideshowBtn').addEventListener('click', () => this.openSlideshow());
         this.container.querySelector('#uploadBtn').addEventListener('click', () => this.uploadImage());
 
-        // Slideshow controls
+        // Slideshow controls - slideshow controls setup kar rahe hai
         this.container.querySelector('#prevBtn').addEventListener('click', () => this.previousImage());
         this.container.querySelector('#nextBtn').addEventListener('click', () => this.nextImage());
         this.container.querySelector('#closeBtn').addEventListener('click', () => this.closeSlideshow());
 
-        // Modal click outside to close
+        // Modal click outside to close - modal ke bahar click karne se band ho jata hai
         this.container.querySelector('#slideshowModal').addEventListener('click', (e) => {
             if (e.target.id === 'slideshowModal') {
                 this.closeSlideshow();
             }
         });
 
-        // Keyboard navigation
+        // Keyboard navigation - keyboard navigation setup kar rahe hai
         document.addEventListener('keydown', (e) => {
             if (!this.container.querySelector('#slideshowModal').classList.contains('hidden')) {
                 switch (e.key) {
@@ -96,7 +96,7 @@ class GalleryApp {
     }
 
     loadImages() {
-        // Get images from file system (with error handling)
+        // Get images from file system (with error handling) - file system se images le rahe hai (error handling ke saath)
         try {
             const contents = window.fileSystem ? window.fileSystem.getContents(this.currentFolder) : [];
             this.images = contents.filter(item => 
@@ -106,7 +106,7 @@ class GalleryApp {
                 )
             );
 
-            // Add some sample images if folder is empty
+            // Add some sample images if folder is empty - agar folder empty hai toh sample images add kar rahe hai
             if (this.images.length === 0 && this.currentFolder === '/Pictures') {
                 this.addSampleImages();
             }
@@ -130,7 +130,7 @@ class GalleryApp {
             { name: 'city2.jpg', url: 'https://picsum.photos/800/600?random=6' }
         ];
 
-        // Create fake image objects for display
+        // Create fake image objects for display - display ke liye fake image objects banate hai
         this.images = sampleImages.map((img, index) => ({
             name: img.name,
             content: img.url,
@@ -212,13 +212,13 @@ class GalleryApp {
     }
 
     getImageUrl(image) {
-        // If the image content is a URL, use it directly
+        // If the image content is a URL, use it directly - agar image content URL hai toh directly use kar rahe hai
         if (image.content && (image.content.startsWith('http') || image.content.startsWith('data:'))) {
             return image.content;
         }
         
-        // For actual uploaded images, we'd use createObjectURL or similar
-        // For now, return a placeholder with the image name
+        // For actual uploaded images, we'd use createObjectURL or similar - actual uploaded images ke liye createObjectURL ya similar use karenge
+        // For now, return a placeholder with the image name - abhi ke liye image name ke saath placeholder return kar rahe hai
         const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', '#eb4d4b', '#6c5ce7', '#a29bfe'];
         const colorIndex = image.name.length % colors.length;
         const bgColor = colors[colorIndex];
@@ -243,7 +243,7 @@ class GalleryApp {
     setViewMode(mode) {
         this.viewMode = mode;
         
-        // Update button states
+        // Update button states - button states update kar rahe hai
         this.container.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('active');
         });
@@ -296,7 +296,7 @@ class GalleryApp {
             return;
         }
         
-        // Ensure index is within bounds
+        // Ensure index is within bounds - index bounds ke andar hai ye ensure kar rahe hai
         if (this.currentImageIndex >= this.images.length) {
             this.currentImageIndex = 0;
         }
@@ -467,5 +467,5 @@ class GalleryApp {
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.GalleryApp = GalleryApp;

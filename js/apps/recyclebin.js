@@ -1,4 +1,4 @@
-// Recycle Bin Application
+// Recycle Bin Application - recycle bin ka application hai ye
 class RecycleBinApp {
     constructor(container, appData = {}) {
         this.container = container;
@@ -30,7 +30,7 @@ class RecycleBinApp {
                 
                 <div class="recyclebin-content">
                     <div id="recycleBinItems" class="recycle-bin-items">
-                        <!-- Content will be loaded here -->
+                        <!-- Content will be loaded here - content yahan load hoga -->
                     </div>
                 </div>
             </div>
@@ -38,13 +38,13 @@ class RecycleBinApp {
     }
 
     setupEventListeners() {
-        // Action buttons
+        // Action buttons - action buttons setup kar rahe hai
         this.container.querySelector('#restoreBtn').addEventListener('click', () => this.restoreSelected());
         this.container.querySelector('#deleteBtn').addEventListener('click', () => this.deleteSelected());
         this.container.querySelector('#emptyBtn').addEventListener('click', () => this.emptyRecycleBin());
         this.container.querySelector('#refreshBtn').addEventListener('click', () => this.refresh());
 
-        // Keyboard shortcuts
+        // Keyboard shortcuts - keyboard shortcuts setup kar rahe hai
         this.container.addEventListener('keydown', (e) => {
             if (e.key === 'Delete') {
                 this.deleteSelected();
@@ -76,7 +76,7 @@ class RecycleBinApp {
                 </div>
             `;
 
-            // Add event listeners to items
+            // Add event listeners to items - items ko event listeners add kar rahe hai
             itemsContainer.querySelectorAll('.recycle-item').forEach(element => {
                 element.addEventListener('click', (e) => this.handleItemClick(e, element));
                 element.addEventListener('dblclick', (e) => this.handleItemDoubleClick(e, element));
@@ -117,13 +117,13 @@ class RecycleBinApp {
     }
 
     handleItemClick(e, element) {
-        // Handle checkbox click
+        // Handle checkbox click - checkbox click handle kar rahe hai
         if (e.target.classList.contains('item-select')) {
             this.updateSelection();
             return;
         }
 
-        // Handle action buttons
+        // Handle action buttons - action buttons handle kar rahe hai
         if (e.target.classList.contains('restore-btn')) {
             e.stopPropagation();
             this.restoreItem(element.dataset.path);
@@ -136,7 +136,7 @@ class RecycleBinApp {
             return;
         }
 
-        // Handle item selection
+        // Handle item selection - item selection handle kar rahe hai
         if (!e.ctrlKey) {
             this.clearSelection();
         }
@@ -147,7 +147,7 @@ class RecycleBinApp {
     }
 
     handleItemDoubleClick(e, element) {
-        // Double-click to restore
+        // Double-click to restore - double-click karne se restore ho jata hai
         this.restoreItem(element.dataset.path);
     }
 
@@ -179,7 +179,7 @@ class RecycleBinApp {
         menu.style.top = e.clientY + 'px';
         document.body.appendChild(menu);
 
-        // Event listeners
+        // Event listeners - context menu ke event listeners setup kar rahe hai
         menu.addEventListener('click', (e) => {
             const action = e.target.closest('.context-item')?.dataset.action;
             if (action) {
@@ -188,7 +188,7 @@ class RecycleBinApp {
             menu.remove();
         });
 
-        // Close on outside click
+        // Close on outside click - bahar click karne pe close kar rahe hai
         setTimeout(() => {
             document.addEventListener('click', () => menu.remove(), { once: true });
         }, 0);
@@ -398,7 +398,7 @@ class RecycleBinApp {
 
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - properties modal ke event listeners setup kar rahe hai
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.onclick = (e) => {
             if (e.target === modal) modal.remove();
@@ -423,5 +423,5 @@ class RecycleBinApp {
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.RecycleBinApp = RecycleBinApp;

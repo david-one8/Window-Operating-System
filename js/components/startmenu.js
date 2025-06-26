@@ -1,4 +1,4 @@
-// Start Menu Management
+// Start Menu Management - start menu management system hai ye
 class StartMenuManager {
     constructor() {
         this.isOpen = false;
@@ -6,7 +6,7 @@ class StartMenuManager {
         this.recentApps = [];
         this.allApps = [];
         this.searchResults = [];
-        this.currentView = 'pinned'; // 'pinned' or 'all'
+        this.currentView = 'pinned'; // 'pinned' or 'all' - 'pinned' ya 'all' view mode hai
         this.init();
     }
 
@@ -22,7 +22,7 @@ class StartMenuManager {
         this.pinnedApps = window.storage.getPinnedApps();
         this.recentApps = window.storage.getRecentApps();
         
-        // Define all available apps
+        // Define all available apps - saare available apps define karte hai
         this.allApps = [
             { id: 'notepad', name: 'Notepad', icon: '📝', app: 'notepad', category: 'Productivity' },
             { id: 'fileexplorer', name: 'File Explorer', icon: '📁', app: 'fileexplorer', category: 'System' },
@@ -126,7 +126,7 @@ class StartMenuManager {
     }
 
     setupEventListeners() {
-        // Start search
+        // Start search - start search setup kar rahe hai
         const startSearch = document.getElementById('startSearch');
         if (startSearch) {
             startSearch.addEventListener('input', (e) => {
@@ -138,32 +138,28 @@ class StartMenuManager {
                     this.openApp(this.searchResults[0]);
                 }
             });
-        }
-
-        // Power options
+        }        
+        // Power options - power options setup kar rahe hai
         document.querySelectorAll('.power-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.handlePowerAction(btn.dataset.action);
             });
-        });
-
-        // User info
+        });        
+        // User info - user info setup kar rahe hai
         const userInfo = document.querySelector('.user-info');
         if (userInfo) {
             userInfo.addEventListener('click', () => {
                 this.showUserMenu();
             });
-        }
-
-        // All apps toggle
+        }        
+        // All apps toggle - all apps toggle setup kar rahe hai
         const allAppsToggle = document.querySelector('.all-apps-toggle');
         if (allAppsToggle) {
             allAppsToggle.addEventListener('click', () => {
                 this.toggleAllAppsView();
             });
-        }
-
-        // Close on outside click
+        }        
+        // Close on outside click - bahar click par close kar dete hai
         document.addEventListener('click', (e) => {
             const startMenu = document.getElementById('startMenu');
             const startButton = document.getElementById('startButton');
@@ -173,9 +169,8 @@ class StartMenuManager {
                 !startButton.contains(e.target)) {
                 this.close();
             }
-        });
-
-        // Keyboard shortcuts
+        });        
+        // Keyboard shortcuts - keyboard shortcuts setup kar rahe hai
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.isOpen) {
                 this.close();
@@ -192,7 +187,7 @@ class StartMenuManager {
             return;
         }
 
-        // Search through all apps
+        // Search through all apps - saare apps mein search karte hai
         this.searchResults = this.allApps.filter(app =>
             app.name.toLowerCase().includes(query.toLowerCase()) ||
             app.category.toLowerCase().includes(query.toLowerCase())
@@ -246,18 +241,16 @@ class StartMenuManager {
         const container = document.getElementById('pinnedApps');
         if (!container) return;
 
-        container.innerHTML = '';
-
-        // Group apps by category
+        container.innerHTML = '';        
+        // Group apps by category - apps ko category ke hisaab se group karte hai
         const categories = {};
         this.allApps.forEach(app => {
             if (!categories[app.category]) {
                 categories[app.category] = [];
             }
             categories[app.category].push(app);
-        });
-
-        // Render each category
+        });        
+        // Render each category - har category ko render karte hai
         Object.entries(categories).forEach(([category, apps]) => {
             const categoryElement = document.createElement('div');
             categoryElement.className = 'apps-category';

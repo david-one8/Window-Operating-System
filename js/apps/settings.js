@@ -1,4 +1,4 @@
-// Settings Application
+// Settings Application - settings ka application hai ye
 class SettingsApp {
     constructor(container, appData = {}) {
         this.container = container;
@@ -49,7 +49,7 @@ class SettingsApp {
                 
                 <div class="settings-content">
                     <div id="settingsContent">
-                        <!-- Content will be loaded here -->
+                        <!-- Content will be loaded here - content yahan load hoga -->
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@ class SettingsApp {
     }
 
     setupEventListeners() {
-        // Category navigation
+        // Category navigation - category navigation setup kar rahe hai
         this.container.querySelectorAll('.settings-category').forEach(category => {
             category.addEventListener('click', () => {
                 const categoryName = category.dataset.category;
@@ -69,7 +69,7 @@ class SettingsApp {
     setActiveCategory(category) {
         this.activeCategory = category;
         
-        // Update sidebar active state
+        // Update sidebar active state - sidebar active state update kar rahe hai
         this.container.querySelectorAll('.settings-category').forEach(cat => {
             cat.classList.toggle('active', cat.dataset.category === category);
         });
@@ -824,5 +824,5 @@ class SettingsApp {
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.SettingsApp = SettingsApp;

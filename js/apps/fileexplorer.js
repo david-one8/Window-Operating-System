@@ -1,10 +1,10 @@
-// File Explorer Application
+// File Explorer Application - file explorer ka application hai ye
 class FileExplorerApp {
     constructor(container, appData = {}) {
         this.container = container;
         this.appData = appData;
         this.currentPath = appData.startPath || '/';
-        this.viewMode = 'grid'; // 'grid' or 'list'
+        this.viewMode = 'grid'; // 'grid' or 'list' - grid ya list view mode hai
         this.selectedItems = [];
         this.clipboardData = null;
         this.history = [this.currentPath];
@@ -78,7 +78,7 @@ class FileExplorerApp {
                     
                     <div class="explorer-main">
                         <div id="explorerContent" class="file-${this.viewMode}">
-                            <!-- Content will be loaded here -->
+                            <!-- Content will be loaded here - content yahan load hoga -->
                         </div>
                     </div>
                 </div>
@@ -87,13 +87,13 @@ class FileExplorerApp {
     }
 
     setupEventListeners() {
-        // Navigation buttons
+        // Navigation buttons - navigation buttons setup kar rahe hai
         this.container.querySelector('#backBtn').addEventListener('click', () => this.goBack());
         this.container.querySelector('#forwardBtn').addEventListener('click', () => this.goForward());
         this.container.querySelector('#upBtn').addEventListener('click', () => this.goUp());
         this.container.querySelector('#refreshBtn').addEventListener('click', () => this.refresh());
 
-        // Address bar
+        // Address bar - address bar setup kar rahe hai
         const addressInput = this.container.querySelector('#addressInput');
         addressInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -101,18 +101,18 @@ class FileExplorerApp {
             }
         });
 
-        // View toggle
+        // View toggle - view toggle setup kar rahe hai
         this.container.querySelectorAll('.view-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.setViewMode(btn.dataset.view);
             });
         });
 
-        // Action buttons
+        // Action buttons - action buttons setup kar rahe hai
         this.container.querySelector('#newFolderBtn').addEventListener('click', () => this.createNewFolder());
         this.container.querySelector('#newFileBtn').addEventListener('click', () => this.createNewFile());
 
-        // Sidebar navigation
+        // Sidebar navigation - sidebar navigation setup kar rahe hai
         this.container.querySelectorAll('.sidebar-item').forEach(item => {
             item.addEventListener('click', () => {
                 const path = item.dataset.path;
@@ -122,7 +122,7 @@ class FileExplorerApp {
             });
         });
 
-        // Global keyboard shortcuts
+        // Global keyboard shortcuts - global keyboard shortcuts setup kar rahe hai
         this.container.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key) {
@@ -150,7 +150,7 @@ class FileExplorerApp {
             }
         });
 
-        // Content area context menu
+        // Content area context menu - content area ka context menu setup kar rahe hai
         const contentArea = this.container.querySelector('#explorerContent');
         contentArea.addEventListener('contextmenu', (e) => {
             if (e.target === contentArea) {
@@ -211,7 +211,7 @@ class FileExplorerApp {
             `;
         }
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         element.addEventListener('click', (e) => this.handleItemClick(e, item));
         element.addEventListener('dblclick', (e) => this.handleItemDoubleClick(e, item));
         element.addEventListener('contextmenu', (e) => this.handleItemContextMenu(e, item));
@@ -269,7 +269,7 @@ class FileExplorerApp {
         if (window.fileSystem.exists(path)) {
             this.currentPath = path;
             
-            // Update history
+            // Update history - history update kar rahe hai
             if (this.historyIndex < this.history.length - 1) {
                 this.history = this.history.slice(0, this.historyIndex + 1);
             }
@@ -317,12 +317,12 @@ class FileExplorerApp {
     setViewMode(mode) {
         this.viewMode = mode;
         
-        // Update view buttons
+        // Update view buttons - view buttons update kar rahe hai
         this.container.querySelectorAll('.view-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.view === mode);
         });
         
-        // Update content container
+        // Update content container - content container update kar rahe hai
         const contentContainer = this.container.querySelector('#explorerContent');
         contentContainer.className = `file-${mode}`;
         
@@ -472,11 +472,11 @@ class FileExplorerApp {
     }
 
     openFile(item) {
-        // Open file in appropriate app
+        // Open file in appropriate app - file ko appropriate app mein open kar rahe hai
         const extension = item.name.split('.').pop().toLowerCase();
         
         if (extension === 'txt') {
-            // Open in Notepad
+            // Open in Notepad - Notepad mein open kar rahe hai
             window.windowManager.openApp('notepad', {
                 id: 'notepad_' + Date.now(),
                 name: 'Notepad',
@@ -485,7 +485,7 @@ class FileExplorerApp {
                 filePath: item.path
             });
         } else if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
-            // Open in Gallery
+            // Open in Gallery - Gallery mein open kar rahe hai
             window.windowManager.openApp('gallery', {
                 id: 'gallery_' + Date.now(),
                 name: 'Gallery',
@@ -505,7 +505,7 @@ class FileExplorerApp {
         let menuItems = [];
         
         if (item) {
-            // Item-specific menu
+            // Item-specific menu - item specific menu hai
             menuItems = [
                 { icon: '📂', text: 'Open', action: () => this.handleItemDoubleClick(e, item) },
                 { divider: true },
@@ -518,7 +518,7 @@ class FileExplorerApp {
                 { icon: 'ℹ️', text: 'Properties', action: () => this.showProperties(item) }
             ];
         } else {
-            // Empty area menu
+            // Empty area menu - empty area ka menu hai
             menuItems = [
                 { icon: '📁', text: 'New Folder', action: () => this.createNewFolder() },
                 { icon: '📄', text: 'New File', action: () => this.createNewFile() },
@@ -545,7 +545,7 @@ class FileExplorerApp {
         menu.style.top = e.clientY + 'px';
         document.body.appendChild(menu);
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         menuItems.forEach((menuItem, index) => {
             if (!menuItem.divider && !menuItem.disabled) {
                 const element = menu.children[index];
@@ -556,7 +556,7 @@ class FileExplorerApp {
             }
         });
 
-        // Close on outside click
+        // Close on outside click - bahar click karne pe close kar rahe hai
         setTimeout(() => {
             document.addEventListener('click', () => menu.remove(), { once: true });
         }, 0);
@@ -600,7 +600,7 @@ class FileExplorerApp {
 
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - properties dialog ke event listeners setup kar rahe hai
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.onclick = (e) => {
             if (e.target === modal) modal.remove();
@@ -619,5 +619,5 @@ class FileExplorerApp {
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.FileExplorerApp = FileExplorerApp;

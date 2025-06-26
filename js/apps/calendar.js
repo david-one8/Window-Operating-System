@@ -1,4 +1,4 @@
-// Calendar Application
+// Calendar Application - Calendar ka application hai ye
 class CalendarApp {
     constructor(container, appData = {}) {
         this.container = container;
@@ -6,7 +6,7 @@ class CalendarApp {
         this.currentDate = new Date();
         this.events = this.loadEvents();
         this.selectedDate = null;
-        this.viewMode = 'month'; // 'month', 'week', 'day'
+        this.viewMode = 'month'; // 'month', 'week', 'day' - view mode set karna hai - teen views hai calendar ke
         this.realTimeEnabled = true;
         this.clockInterval = null;
         this.init();
@@ -58,11 +58,11 @@ class CalendarApp {
                 
                 <div class="calendar-content">
                     <div id="calendarGrid" class="calendar-grid">
-                        <!-- Calendar will be rendered here -->
+                        <!-- Calendar will be rendered here - calendar yahan render hoga -->
                     </div>
                 </div>
                 
-                <!-- Event Modal -->
+                <!-- Event Modal - event ka modal hai ye -->
                 <div class="modal-overlay hidden" id="eventModal">
                     <div class="modal">
                         <div class="modal-header">
@@ -112,27 +112,27 @@ class CalendarApp {
     }
 
     setupEventListeners() {
-        // Navigation
+        // Navigation - navigation setup kar rahe hai
         this.container.querySelector('#prevBtn').addEventListener('click', () => this.previousPeriod());
         this.container.querySelector('#nextBtn').addEventListener('click', () => this.nextPeriod());
         this.container.querySelector('#todayBtn').addEventListener('click', () => this.goToToday());
 
-        // View toggle
+        // View toggle - view toggle setup kar rahe hai
         this.container.querySelectorAll('.view-btn').forEach(btn => {
             btn.addEventListener('click', () => this.setViewMode(btn.dataset.view));
         });
 
-        // New event
+        // New event - nayi event banane ke liye
         this.container.querySelector('#newEventBtn').addEventListener('click', () => this.openEventModal());
 
-        // Modal
+        // Modal - modal setup kar rahe hai
         this.container.querySelector('#modalClose').addEventListener('click', () => this.closeEventModal());
         this.container.querySelector('#cancelBtn').addEventListener('click', () => this.closeEventModal());
         this.container.querySelector('#eventModal').addEventListener('click', (e) => {
             if (e.target.id === 'eventModal') this.closeEventModal();
         });
 
-        // Form
+        // Form - form submit handle kar rahe hai
         this.container.querySelector('#eventForm').addEventListener('submit', (e) => this.handleEventSubmit(e));
         this.container.querySelector('#deleteEventBtn').addEventListener('click', () => this.deleteCurrentEvent());
     }
@@ -154,14 +154,14 @@ class CalendarApp {
         const month = this.currentDate.getMonth();
         const today = new Date();
         
-        // Get first day of month and calculate starting date
+        // Get first day of month and calculate starting date - mahine ka pehla din nikaal ke starting date calculate kar rahe hai
         const firstDay = new Date(year, month, 1);
         const startDate = new Date(firstDay);
         startDate.setDate(startDate.getDate() - firstDay.getDay());
         
-        // Get days in month
+        // Get days in month - mahine mein kitne din hai calculate kar rahe hai
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const totalDays = 42; // 6 weeks * 7 days
+        const totalDays = 42; // 6 weeks * 7 days - total 42 din, 6 hafte mein 7 din
         
         let html = `
             <div class="calendar-weekdays">
@@ -212,7 +212,7 @@ class CalendarApp {
         html += '</div>';
         grid.innerHTML = html;
         
-        // Add click handlers
+        // Add click handlers - click handlers add kar rahe hai
         grid.querySelectorAll('.calendar-day').forEach(day => {
             day.addEventListener('click', (e) => {
                 if (!e.target.classList.contains('calendar-event')) {
@@ -234,7 +234,7 @@ class CalendarApp {
     }
 
     renderWeekView(grid) {
-        // Week view implementation
+        // Week view implementation - week view banane ka implementation hai
         const startOfWeek = this.getStartOfWeek(this.currentDate);
         const days = [];
         
@@ -274,7 +274,7 @@ class CalendarApp {
     }
 
     renderDayView(grid) {
-        // Day view implementation
+        // Day view implementation - din ka view banane ka implementation hai
         const today = this.currentDate;
         const events = this.getEventsForDate(today);
         
@@ -339,7 +339,7 @@ class CalendarApp {
     selectDate(dateKey) {
         this.selectedDate = this.parseDate(dateKey);
         
-        // Update visual selection
+        // Update visual selection - visual selection update kar rahe hai
         this.container.querySelectorAll('.calendar-day').forEach(day => {
             day.classList.toggle('selected', day.dataset.date === dateKey);
         });
@@ -351,11 +351,11 @@ class CalendarApp {
         const title = this.container.querySelector('#modalTitle');
         const deleteBtn = this.container.querySelector('#deleteEventBtn');
         
-        // Reset form
+        // Reset form - form ko reset kar rahe hai
         form.reset();
         this.currentEventId = null;
         
-        // Set date if provided
+        // Set date if provided - agar date di hai toh set kar rahe hai
         if (dateKey) {
             const date = this.parseDate(dateKey);
             this.container.querySelector('#eventDate').value = this.formatDateInput(date);
@@ -369,7 +369,7 @@ class CalendarApp {
         deleteBtn.style.display = 'none';
         modal.classList.remove('hidden');
         
-        // Focus title input
+        // Focus title input - title input pe focus kar rahe hai
         this.container.querySelector('#eventTitle').focus();
     }
 
@@ -382,7 +382,7 @@ class CalendarApp {
         const title = this.container.querySelector('#modalTitle');
         const deleteBtn = this.container.querySelector('#deleteEventBtn');
         
-        // Populate form
+        // Populate form - form ko populate kar rahe hai
         this.container.querySelector('#eventTitle').value = event.title;
         this.container.querySelector('#eventDate').value = event.date;
         this.container.querySelector('#eventTime').value = event.time || '';
@@ -417,14 +417,14 @@ class CalendarApp {
         };
         
         if (this.currentEventId) {
-            // Update existing event
+            // Update existing event - existing event ko update kar rahe hai
             const index = this.events.findIndex(e => e.id === this.currentEventId);
             if (index !== -1) {
                 this.events[index] = { ...this.events[index], ...eventData };
                 this.showNotification('Event updated successfully', 'success');
             }
         } else {
-            // Create new event
+            // Create new event - nayi event banate hai
             this.events.push(eventData);
             this.showNotification('Event created successfully', 'success');
         }
@@ -515,11 +515,11 @@ class CalendarApp {
         
         const now = new Date();
         const eventDate = new Date(event.date + 'T' + event.time + ':00');
-        const eventEndDate = new Date(eventDate.getTime() + (60 * 60 * 1000)); // Assume 1 hour duration if no end time
+        const eventEndDate = new Date(eventDate.getTime() + (60 * 60 * 1000)); // Assume 1 hour duration if no end time - agar end time nahi hai toh 1 ghanta assume kar rahe hai
         
         const timeDiff = eventDate.getTime() - now.getTime();
         const isHappeningNow = now >= eventDate && now <= eventEndDate;
-        const isUpcomingSoon = timeDiff > 0 && timeDiff <= (30 * 60 * 1000); // Next 30 minutes
+        const isUpcomingSoon = timeDiff > 0 && timeDiff <= (30 * 60 * 1000); // Next 30 minutes - agle 30 minute mein hone wala hai
         
         if (isHappeningNow) {
             return 'happening-now';
@@ -562,7 +562,7 @@ class CalendarApp {
     loadEvents() {
         let events = window.storage.get('calendar_events', []);
         
-        // Add some sample events if none exist
+        // Add some sample events if none exist - agar koi events nahi hai toh sample events add kar rahe hai
         if (events.length === 0) {
             const today = new Date();
             const tomorrow = new Date(today);
@@ -602,14 +602,14 @@ class CalendarApp {
                     id: 'sample_4',
                     title: 'Live Demo',
                     date: this.formatDateInput(today),
-                    time: this.getTimeInMinutes(5), // 5 minutes from now
+                    time: this.getTimeInMinutes(5), // 5 minutes from now - abhi se 5 minute baad
                     description: 'Real-time calendar demonstration',
                     color: 'purple',
                     created: Date.now()
                 }
             ];
             
-            // Save the sample events
+            // Save the sample events - sample events ko save kar rahe hai
             window.storage.set('calendar_events', events);
         }
         
@@ -631,7 +631,7 @@ class CalendarApp {
         }
     }
 
-    // Real-time functionality
+    // Real-time functionality - real-time functionality hai ye
     startRealTimeClock() {
         if (this.clockInterval) {
             clearInterval(this.clockInterval);
@@ -639,7 +639,7 @@ class CalendarApp {
         
         this.updateRealTimeDisplay();
         
-        // Update every second
+        // Update every second - har second update kar rahe hai
         this.clockInterval = setInterval(() => {
             this.updateRealTimeDisplay();
             this.checkForCurrentTimeIndicators();
@@ -669,7 +669,7 @@ class CalendarApp {
     checkForCurrentTimeIndicators() {
         const now = new Date();
         
-        // Update today highlighting
+        // Update today highlighting - aaj ka highlighting update kar rahe hai
         this.container.querySelectorAll('.calendar-day').forEach(day => {
             const dayDate = new Date(day.dataset.date + 'T00:00:00');
             const isToday = this.isSameDay(dayDate, now);
@@ -682,23 +682,23 @@ class CalendarApp {
             }
         });
 
-        // Check for event notifications (upcoming events in next 15 minutes)
+        // Check for event notifications (upcoming events in next 15 minutes) - event notifications check kar rahe hai (agle 15 minute mein hone wale events)
         this.checkUpcomingEventNotifications(now);
         
-        // Auto-refresh calendar at midnight
+        // Auto-refresh calendar at midnight - midnight mein calendar auto-refresh kar rahe hai
         if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() < 2) {
             this.renderCalendar();
         }
     }
 
     updateCurrentTimeIndicator(todayElement, now) {
-        // Remove existing time indicator
+        // Remove existing time indicator - existing time indicator ko remove kar rahe hai
         const existingIndicator = todayElement.querySelector('.current-time-indicator');
         if (existingIndicator) {
             existingIndicator.remove();
         }
 
-        // Only show time indicator in day or week view for today
+        // Only show time indicator in day or week view for today - sirf aaj ke din ke liye day ya week view mein time indicator dikhate hai
         if (this.viewMode === 'day' || this.viewMode === 'week') {
             const timeIndicator = document.createElement('div');
             timeIndicator.className = 'current-time-indicator';
@@ -708,11 +708,11 @@ class CalendarApp {
                 <div class="time-label">${this.getCurrentTime()}</div>
             `;
             
-            // Position based on current time (approximate)
+            // Position based on current time (approximate) - current time ke basis pe position set kar rahe hai (approximate)
             const hours = now.getHours();
             const minutes = now.getMinutes();
             const totalMinutes = hours * 60 + minutes;
-            const percentageOfDay = (totalMinutes / 1440) * 100; // 1440 minutes in a day
+            const percentageOfDay = (totalMinutes / 1440) * 100; // 1440 minutes in a day - din mein 1440 minutes hote hai
             
             timeIndicator.style.top = `${Math.min(percentageOfDay, 95)}%`;
             todayElement.style.position = 'relative';
@@ -721,13 +721,13 @@ class CalendarApp {
     }
 
     checkUpcomingEventNotifications(now) {
-        const upcomingThreshold = 15 * 60 * 1000; // 15 minutes in milliseconds
+        const upcomingThreshold = 15 * 60 * 1000; // 15 minutes in milliseconds - 15 minute milliseconds mein
         
         this.events.forEach(event => {
             const eventDate = new Date(event.date + 'T' + (event.time || '00:00:00'));
             const timeDiff = eventDate.getTime() - now.getTime();
             
-            // Check if event is starting in 15 minutes (within 1 minute window)
+            // Check if event is starting in 15 minutes (within 1 minute window) - check kar rahe hai ki event 15 minute mein start ho raha hai (1 minute ke window mein)
             if (timeDiff > 0 && timeDiff <= upcomingThreshold && timeDiff >= (upcomingThreshold - 60000)) {
                 this.showEventReminder(event);
             }
@@ -776,10 +776,10 @@ class CalendarApp {
     getTimeInMinutes(minutesFromNow) {
         const now = new Date();
         const futureTime = new Date(now.getTime() + (minutesFromNow * 60 * 1000));
-        return futureTime.toTimeString().slice(0, 5); // Returns HH:MM format
+        return futureTime.toTimeString().slice(0, 5); // Returns HH:MM format - HH:MM format mein return karta hai
     }
 
-    // Override the existing goToToday method to include real-time
+    // Override the existing goToToday method to include real-time - existing goToToday method ko override kar rahe hai real-time ke liye
     goToToday() {
         this.currentDate = new Date();
         this.updateTitle();
@@ -787,11 +787,11 @@ class CalendarApp {
         this.showNotification('Jumped to today', 'info');
     }
 
-    // Cleanup method for when calendar is closed
+    // Cleanup method for when calendar is closed - calendar band hone pe cleanup method hai
     destroy() {
         this.stopRealTimeClock();
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.CalendarApp = CalendarApp;

@@ -1,4 +1,4 @@
-// Web Browser Application
+// Web Browser Application - web browser ka application hai ye
 class BrowserApp {
     constructor(container, appData = {}) {
         this.container = container;
@@ -59,13 +59,13 @@ class BrowserApp {
     }
 
     setupEventListeners() {
-        // Navigation buttons
+        // Navigation buttons - navigation buttons setup kar rahe hai
         this.container.querySelector('#backBtn').addEventListener('click', () => this.goBack());
         this.container.querySelector('#forwardBtn').addEventListener('click', () => this.goForward());
         this.container.querySelector('#refreshBtn').addEventListener('click', () => this.refresh());
         this.container.querySelector('#homeBtn').addEventListener('click', () => this.goHome());
 
-        // URL input
+        // URL input - URL input setup kar rahe hai
         const urlInput = this.container.querySelector('#urlInput');
         const goBtn = this.container.querySelector('#goBtn');
 
@@ -79,17 +79,17 @@ class BrowserApp {
             this.navigate(urlInput.value);
         });
 
-        // Other actions
+        // Other actions - baaki actions setup kar rahe hai
         this.container.querySelector('#bookmarkBtn').addEventListener('click', () => this.toggleBookmark());
         this.container.querySelector('#menuBtn').addEventListener('click', () => this.showMenu());
         this.container.querySelector('#retryBtn').addEventListener('click', () => this.loadPage());
 
-        // Iframe load events
+        // Iframe load events - iframe load events setup kar rahe hai
         const iframe = this.container.querySelector('#browserFrame');
         iframe.addEventListener('load', () => this.onPageLoad());
         iframe.addEventListener('error', () => this.onPageError());
 
-        // Update navigation state
+        // Update navigation state - navigation state update kar rahe hai
         this.updateNavigation();
     }
 
@@ -103,15 +103,15 @@ class BrowserApp {
         iframe.style.display = 'none';
 
         try {
-            // Check if URL is valid
+            // Check if URL is valid - URL valid hai ya nahi check kar rahe hai
             let url = this.currentUrl;
             
-            // Add protocol if missing
+            // Add protocol if missing - agar protocol missing hai toh add kar rahe hai
             if (!url.match(/^https?:\/\//)) {
                 if (url.includes('.') && !url.includes(' ')) {
                     url = 'https://' + url;
                 } else {
-                    // Treat as search query
+                    // Treat as search query - search query ki tarah treat kar rahe hai
                     url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
                 }
             }
@@ -134,10 +134,10 @@ class BrowserApp {
         error.style.display = 'none';
         iframe.style.display = 'block';
 
-        // Update window title
+        // Update window title - window title update kar rahe hai
         this.updateWindowTitle();
         
-        // Update bookmark button state
+        // Update bookmark button state - bookmark button state update kar rahe hai
         this.updateBookmarkButton();
     }
 
@@ -156,7 +156,7 @@ class BrowserApp {
 
         this.currentUrl = url.trim();
         
-        // Update history
+        // Update history - history update kar rahe hai
         if (this.historyIndex < this.history.length - 1) {
             this.history = this.history.slice(0, this.historyIndex + 1);
         }
@@ -284,7 +284,7 @@ class BrowserApp {
         bookmarksBar.innerHTML = this.renderBookmarks();
         bookmarksBar.style.display = this.bookmarks.length > 0 ? 'flex' : 'none';
 
-        // Add event listeners to bookmarks
+        // Add event listeners to bookmarks - bookmarks ko event listeners add kar rahe hai
         bookmarksBar.querySelectorAll('.bookmark-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 if (!e.target.classList.contains('bookmark-remove')) {
@@ -339,7 +339,7 @@ class BrowserApp {
         
         document.body.appendChild(menu);
 
-        // Event listeners
+        // Event listeners - event listeners setup kar rahe hai
         menu.addEventListener('click', (e) => {
             const action = e.target.closest('.context-item')?.dataset.action;
             if (action) {
@@ -348,7 +348,7 @@ class BrowserApp {
             menu.remove();
         });
 
-        // Close on outside click
+        // Close on outside click - bahar click karne pe close kar rahe hai
         setTimeout(() => {
             document.addEventListener('click', () => menu.remove(), { once: true });
         }, 0);
@@ -357,7 +357,7 @@ class BrowserApp {
     handleMenuAction(action) {
         switch (action) {
             case 'new-tab':
-                // Open new browser window
+                // Open new browser window - nayi browser window open kar rahe hai
                 window.windowManager.openApp('browser', {
                     id: 'browser_' + Date.now(),
                     name: 'Web Browser',
@@ -413,7 +413,7 @@ class BrowserApp {
 
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - bookmarks dialog ke event listeners setup kar rahe hai
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.onclick = (e) => {
             if (e.target === modal) modal.remove();
@@ -462,7 +462,7 @@ class BrowserApp {
 
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - history dialog ke event listeners setup kar rahe hai
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.onclick = (e) => {
             if (e.target === modal) modal.remove();
@@ -503,7 +503,7 @@ class BrowserApp {
 
         document.body.appendChild(modal);
 
-        // Event listeners
+        // Event listeners - about dialog ke event listeners setup kar rahe hai
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.onclick = (e) => {
             if (e.target === modal) modal.remove();
@@ -530,5 +530,5 @@ class BrowserApp {
     }
 }
 
-// Register the app globally
+// Register the app globally - app ko globally register kar rahe hai
 window.BrowserApp = BrowserApp;

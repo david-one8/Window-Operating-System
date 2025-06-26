@@ -1,4 +1,4 @@
-// Taskbar Management
+// Taskbar Management - taskbar management system hai ye
 class TaskbarManager {
     constructor() {
         this.runningApps = new Map();
@@ -56,15 +56,14 @@ class TaskbarManager {
     }
 
     setupEventListeners() {
-        // Start button
+        // Start button - start button setup kar rahe hai
         const startButton = document.getElementById('startButton');
         if (startButton) {
             startButton.addEventListener('click', () => {
                 window.startMenuManager.toggle();
             });
-        }
-
-        // Search input
+        }        
+        // Search input - search input setup kar rahe hai
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -76,9 +75,8 @@ class TaskbarManager {
                     this.executeSearch(e.target.value);
                 }
             });
-        }
-
-        // System tray icons
+        }        
+        // System tray icons - system tray icons setup kar rahe hai
         document.getElementById('wifiIcon')?.addEventListener('click', () => {
             this.toggleWifi();
         });
@@ -93,9 +91,8 @@ class TaskbarManager {
 
         document.getElementById('notificationIcon')?.addEventListener('click', () => {
             window.notificationManager.toggle();
-        });
-
-        // Clock container
+        });        
+        // Clock container - clock container setup kar rahe hai
         document.getElementById('clockContainer')?.addEventListener('click', () => {
             this.showCalendar();
         });
@@ -145,9 +142,8 @@ class TaskbarManager {
             appElement.className = 'taskbar-app';
             appElement.dataset.appId = appId;
             appElement.innerHTML = app.icon;
-            appElement.title = app.name;
-
-            // Check if app has focused window
+            appElement.title = app.name;            
+            // Check if app has focused window - check karte hai ki app ka focused window hai ya nahi
             const hasActiveWindow = app.windows.some(windowId => {
                 const window = document.querySelector(`[data-window-id="${windowId}"]`);
                 return window && window.classList.contains('focused');
@@ -155,9 +151,8 @@ class TaskbarManager {
 
             if (hasActiveWindow) {
                 appElement.classList.add('active');
-            }
-
-            // Event listeners
+            }            
+            // Event listeners - event listeners setup kar rahe hai
             appElement.addEventListener('click', () => {
                 this.handleTaskbarAppClick(appId, app);
             });
@@ -181,7 +176,7 @@ class TaskbarManager {
 
     handleTaskbarAppClick(appId, app) {
         if (app.windows.length === 1) {
-            // Single window - toggle minimize/restore
+            // Single window - toggle minimize/restore - single window - minimize/restore toggle karte hai
             const windowId = app.windows[0];
             const windowElement = document.querySelector(`[data-window-id="${windowId}"]`);
             
@@ -371,17 +366,16 @@ class TaskbarManager {
         }
     }
 
-    updateSystemTray() {
-        // Update system tray icons based on system state
+    updateSystemTray() {        
+        // Update system tray icons based on system state - system state ke hisaab se system tray icons update karte hai
         const settings = window.storage.getSettings();
         
-        // Update theme toggle
+        // Update theme toggle - theme toggle update karte hai
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.classList.toggle('active', settings.theme === 'dark');
-        }
-
-        // Update other system indicators
+        }        
+        // Update other system indicators - doosre system indicators update karte hai
         this.updateWifiStatus();
         this.updateVolumeStatus();
         this.updateBatteryStatus();
@@ -422,7 +416,7 @@ class TaskbarManager {
     }
 
     toggleWifi() {
-        // Toggle wifi (simulated)
+        // Toggle wifi (simulated) - wifi toggle karte hai (simulated)
         const wifiToggle = document.getElementById('wifiToggle');
         if (wifiToggle) {
             wifiToggle.classList.toggle('active');
@@ -432,7 +426,7 @@ class TaskbarManager {
     }
 
     toggleVolume() {
-        // Toggle volume mute
+        // Toggle volume mute - volume mute toggle karte hai
         const volumeSlider = document.getElementById('volumeSlider');
         if (volumeSlider) {
             const currentVolume = parseInt(volumeSlider.value);
@@ -452,7 +446,7 @@ class TaskbarManager {
     }
 
     showCalendar() {
-        // Open calendar app
+        // Open calendar app - calendar app kholte hai
         window.windowManager.openApp('calendar', {
             id: 'calendar',
             name: 'Calendar',
@@ -462,7 +456,7 @@ class TaskbarManager {
     }
 }
 
-// Initialize taskbar manager when DOM is loaded
+// Initialize taskbar manager when DOM is loaded - DOM load hone par taskbar manager initialize karte hai
 document.addEventListener('DOMContentLoaded', () => {
     window.taskbarManager = new TaskbarManager();
 });
