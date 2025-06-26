@@ -96,45 +96,59 @@ class GalleryApp {
     }
 
     loadImages() {
-        // Get images from file system
-        const contents = window.fileSystem.getContents(this.currentFolder);
-        this.images = contents.filter(item => 
-            item.type === 'file' && 
-            ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(
-                item.name.split('.').pop().toLowerCase()
-            )
-        );
+        // Get images from file system (with error handling)
+        try {
+            const contents = window.fileSystem ? window.fileSystem.getContents(this.currentFolder) : [];
+            this.images = contents.filter(item => 
+                item.type === 'file' && 
+                ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(
+                    item.name.split('.').pop().toLowerCase()
+                )
+            );
 
-        // Add some sample images if folder is empty
-        if (this.images.length === 0 && this.currentFolder === '/Pictures') {
+            // Add some sample images if folder is empty
+            if (this.images.length === 0 && this.currentFolder === '/Pictures') {
+                this.addSampleImages();
+            }
+
+            this.renderContent();
+        } catch (error) {
+            console.error('Error loading images:', error);
+            this.images = [];
             this.addSampleImages();
+            this.renderContent();
         }
-
-        this.renderContent();
     }
 
     addSampleImages() {
         const sampleImages = [
-            { name: 'landscape1.jpg', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop' },
-            { name: 'landscape2.jpg', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop' },
-            { name: 'nature1.jpg', url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop' },
-            { name: 'nature2.jpg', url: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=800&h=600&fit=crop' },
-            { name: 'city1.jpg', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop' },
-            { name: 'city2.jpg', url: 'https://images.unsplash.com/photo-1444927714506-8492d94b5ba0?w=800&h=600&fit=crop' }
+            { name: 'landscape1.jpg', url: 'https://picsum.photos/800/600?random=1' },
+            { name: 'landscape2.jpg', url: 'https://picsum.photos/800/600?random=2' },
+            { name: 'nature1.jpg', url: 'https://picsum.photos/800/600?random=3' },
+            { name: 'nature2.jpg', url: 'https://picsum.photos/800/600?random=4' },
+            { name: 'city1.jpg', url: 'https://picsum.photos/800/600?random=5' },
+            { name: 'city2.jpg', url: 'https://picsum.photos/800/600?random=6' }
         ];
 
-        sampleImages.forEach(img => {
-            window.fileSystem.createFile(img.name, img.url, this.currentFolder);
-        });
+        // Create fake image objects for display
+        this.images = sampleImages.map((img, index) => ({
+            name: img.name,
+            content: img.url,
+            type: 'file',
+            path: `${this.currentFolder}/${img.name}`,
+            id: 'sample_' + index
+        }));
 
-        // Reload images after adding samples
-        const contents = window.fileSystem.getContents(this.currentFolder);
-        this.images = contents.filter(item => 
-            item.type === 'file' && 
-            ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(
-                item.name.split('.').pop().toLowerCase()
-            )
-        );
+        // Try to save to filesystem if available
+        if (window.fileSystem) {
+            try {
+                sampleImages.forEach(img => {
+                    window.fileSystem.createFile(img.name, img.url, this.currentFolder);
+                });
+            } catch (error) {
+                console.log('FileSystem not available, using sample data');
+            }
+        }
     }
 
     renderContent() {
@@ -199,13 +213,31 @@ class GalleryApp {
 
     getImageUrl(image) {
         // If the image content is a URL, use it directly
-        if (image.content && image.content.startsWith('http')) {
+        if (image.content && (image.content.startsWith('http') || image.content.startsWith('data:'))) {
             return image.content;
         }
         
         // For actual uploaded images, we'd use createObjectURL or similar
-        // For now, return a placeholder
-        return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNHB4IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2U8L3RleHQ+PC9zdmc+';
+        // For now, return a placeholder with the image name
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', '#eb4d4b', '#6c5ce7', '#a29bfe'];
+        const colorIndex = image.name.length % colors.length;
+        const bgColor = colors[colorIndex];
+        
+        return `data:image/svg+xml;base64,${btoa(`
+            <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:${bgColor};stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:${bgColor}99;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grad)"/>
+                <rect x="50" y="50" width="700" height="400" fill="none" stroke="white" stroke-width="4" rx="16" opacity="0.3"/>
+                <circle cx="200" cy="200" r="60" fill="white" opacity="0.4"/>
+                <polygon points="500,300 400,200 600,200" fill="white" opacity="0.4"/>
+                <text x="400" y="500" font-family="Segoe UI, Arial, sans-serif" font-size="32px" fill="white" text-anchor="middle" font-weight="600">${image.name}</text>
+            </svg>
+        `)}`;
     }
 
     setViewMode(mode) {
@@ -259,17 +291,35 @@ class GalleryApp {
     }
 
     updateSlideshow() {
-        if (this.images.length === 0) return;
+        if (this.images.length === 0) {
+            this.closeSlideshow();
+            return;
+        }
+        
+        // Ensure index is within bounds
+        if (this.currentImageIndex >= this.images.length) {
+            this.currentImageIndex = 0;
+        }
+        if (this.currentImageIndex < 0) {
+            this.currentImageIndex = this.images.length - 1;
+        }
         
         const currentImage = this.images[this.currentImageIndex];
         const slideshowImage = this.container.querySelector('#slideshowImage');
         const imageTitle = this.container.querySelector('#imageTitle');
         const imageCounter = this.container.querySelector('#imageCounter');
         
-        slideshowImage.src = this.getImageUrl(currentImage);
-        slideshowImage.alt = currentImage.name;
-        imageTitle.textContent = currentImage.name;
-        imageCounter.textContent = `${this.currentImageIndex + 1} of ${this.images.length}`;
+        if (slideshowImage && imageTitle && imageCounter && currentImage) {
+            slideshowImage.src = this.getImageUrl(currentImage);
+            slideshowImage.alt = currentImage.name;
+            imageTitle.textContent = currentImage.name;
+            imageCounter.textContent = `${this.currentImageIndex + 1} of ${this.images.length}`;
+            
+            // Handle image load errors
+            slideshowImage.onerror = () => {
+                slideshowImage.src = this.getImageUrl({ name: 'Error loading image', content: '' });
+            };
+        }
     }
 
     uploadImage() {
@@ -287,24 +337,60 @@ class GalleryApp {
     }
 
     handleImageUpload(files) {
+        let processed = 0;
         let uploaded = 0;
         
+        if (files.length === 0) return;
+
         files.forEach(file => {
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const content = e.target.result;
-                    if (window.fileSystem.createFile(file.name, content, this.currentFolder)) {
-                        uploaded++;
+                    
+                    // Create image object
+                    const newImage = {
+                        name: file.name,
+                        content: content,
+                        type: 'file',
+                        path: `${this.currentFolder}/${file.name}`,
+                        id: 'uploaded_' + Date.now() + '_' + processed
+                    };
+                    
+                    // Add to images array
+                    this.images.push(newImage);
+                    
+                    // Try to save to filesystem if available
+                    if (window.fileSystem) {
+                        try {
+                            window.fileSystem.createFile(file.name, content, this.currentFolder);
+                        } catch (error) {
+                            console.log('FileSystem save failed, keeping in memory');
+                        }
                     }
                     
+                    uploaded++;
+                    processed++;
+                    
                     // Refresh after all files are processed
-                    if (uploaded === files.length) {
-                        this.refresh();
+                    if (processed === files.length) {
+                        this.renderContent();
                         this.showNotification(`${uploaded} image(s) uploaded successfully`, 'success');
                     }
                 };
+                reader.onerror = () => {
+                    processed++;
+                    this.showNotification(`Failed to upload ${file.name}`, 'error');
+                    
+                    if (processed === files.length && uploaded > 0) {
+                        this.renderContent();
+                        this.showNotification(`${uploaded} of ${files.length} image(s) uploaded successfully`, 'warning');
+                    }
+                };
                 reader.readAsDataURL(file);
+            } else {
+                processed++;
+                this.showNotification(`${file.name} is not a valid image file`, 'warning');
             }
         });
     }
@@ -314,7 +400,13 @@ class GalleryApp {
         if (!image) return;
         
         if (confirm(`Are you sure you want to delete "${image.name}"?`)) {
-            if (window.fileSystem.delete(image.path)) {
+            try {
+                // Try to delete from filesystem if available
+                if (window.fileSystem && image.path) {
+                    window.fileSystem.delete(image.path);
+                }
+                
+                // Remove from images array
                 this.images.splice(index, 1);
                 this.renderContent();
                 this.showNotification('Image deleted successfully', 'success');
@@ -324,24 +416,37 @@ class GalleryApp {
                     this.currentImageIndex = Math.max(0, this.images.length - 1);
                 }
                 
-                // Close slideshow if no images left
-                if (this.images.length === 0) {
-                    this.closeSlideshow();
-                } else {
-                    this.updateSlideshow();
+                // Update slideshow if open
+                const modal = this.container.querySelector('#slideshowModal');
+                if (!modal.classList.contains('hidden')) {
+                    if (this.images.length === 0) {
+                        this.closeSlideshow();
+                    } else {
+                        this.updateSlideshow();
+                    }
                 }
-            } else {
+            } catch (error) {
+                console.error('Error deleting image:', error);
                 this.showNotification('Failed to delete image', 'error');
             }
         }
     }
 
     goBack() {
-        if (this.currentFolder !== '/') {
-            const parentPath = window.fileSystem.getParentPath(this.currentFolder);
-            this.currentFolder = parentPath;
-            this.container.querySelector('.gallery-path').textContent = this.currentFolder;
-            this.loadImages();
+        if (this.currentFolder !== '/' && this.currentFolder !== '/Pictures') {
+            try {
+                const parentPath = window.fileSystem ? 
+                    window.fileSystem.getParentPath(this.currentFolder) : 
+                    '/Pictures';
+                this.currentFolder = parentPath;
+                this.container.querySelector('.gallery-path').textContent = this.currentFolder;
+                this.loadImages();
+            } catch (error) {
+                console.error('Error navigating back:', error);
+                this.currentFolder = '/Pictures';
+                this.container.querySelector('.gallery-path').textContent = this.currentFolder;
+                this.loadImages();
+            }
         }
     }
 

@@ -7,6 +7,8 @@ class CalendarApp {
         this.events = this.loadEvents();
         this.selectedDate = null;
         this.viewMode = 'month'; // 'month', 'week', 'day'
+        this.realTimeEnabled = true;
+        this.clockInterval = null;
         this.init();
     }
 
@@ -14,6 +16,7 @@ class CalendarApp {
         this.render();
         this.setupEventListeners();
         this.renderCalendar();
+        this.startRealTimeClock();
     }
 
     render() {
@@ -30,7 +33,20 @@ class CalendarApp {
                         ${this.getMonthYearString()}
                     </div>
                     
+                    <div class="real-time-display">
+                        <div class="current-time" id="currentTime">
+                            ${this.getCurrentTime()}
+                        </div>
+                        <div class="current-date" id="currentDate">
+                            ${this.getCurrentDateString()}
+                        </div>
+                    </div>
+                    
                     <div class="calendar-actions">
+                        <div class="calendar-status">
+                            <div class="status-indicator"></div>
+                            <span>Live</span>
+                        </div>
                         <div class="view-toggle">
                             <button class="view-btn ${this.viewMode === 'month' ? 'active' : ''}" data-view="month">Month</button>
                             <button class="view-btn ${this.viewMode === 'week' ? 'active' : ''}" data-view="week">Week</button>
@@ -181,11 +197,12 @@ class CalendarApp {
                 <div class="${classes.join(' ')}" data-date="${dayKey}">
                     <div class="calendar-day-number">${dayNumber}</div>
                     <div class="calendar-events">
-                        ${dayEvents.slice(0, 3).map(event => `
-                            <div class="calendar-event ${event.color}" data-event-id="${event.id}" title="${event.title}">
+                        ${dayEvents.slice(0, 3).map(event => {
+                            const eventStatus = this.getEventStatus(event);
+                            return `<div class="calendar-event ${event.color} ${eventStatus}" data-event-id="${event.id}" title="${event.title}${event.time ? ' at ' + event.time : ''}">
                                 ${event.title}
-                            </div>
-                        `).join('')}
+                            </div>`;
+                        }).join('')}
                         ${dayEvents.length > 3 ? `<div class="more-events">+${dayEvents.length - 3} more</div>` : ''}
                     </div>
                 </div>
@@ -493,6 +510,26 @@ class CalendarApp {
         return this.events.filter(event => event.date === this.formatDateInput(date));
     }
 
+    getEventStatus(event) {
+        if (!event.time) return '';
+        
+        const now = new Date();
+        const eventDate = new Date(event.date + 'T' + event.time + ':00');
+        const eventEndDate = new Date(eventDate.getTime() + (60 * 60 * 1000)); // Assume 1 hour duration if no end time
+        
+        const timeDiff = eventDate.getTime() - now.getTime();
+        const isHappeningNow = now >= eventDate && now <= eventEndDate;
+        const isUpcomingSoon = timeDiff > 0 && timeDiff <= (30 * 60 * 1000); // Next 30 minutes
+        
+        if (isHappeningNow) {
+            return 'happening-now';
+        } else if (isUpcomingSoon) {
+            return 'upcoming-soon';
+        }
+        
+        return '';
+    }
+
     getMonthYearString() {
         return this.currentDate.toLocaleDateString('en', {year: 'numeric', month: 'long'});
     }
@@ -523,7 +560,60 @@ class CalendarApp {
     }
 
     loadEvents() {
-        return window.storage.get('calendar_events', []);
+        let events = window.storage.get('calendar_events', []);
+        
+        // Add some sample events if none exist
+        if (events.length === 0) {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            
+            events = [
+                {
+                    id: 'sample_1',
+                    title: 'Team Meeting',
+                    date: this.formatDateInput(today),
+                    time: '10:00',
+                    description: 'Weekly team sync meeting',
+                    color: 'blue',
+                    created: Date.now()
+                },
+                {
+                    id: 'sample_2',
+                    title: 'Project Deadline',
+                    date: this.formatDateInput(tomorrow),
+                    time: '17:00',
+                    description: 'Final submission for the project',
+                    color: 'red',
+                    created: Date.now()
+                },
+                {
+                    id: 'sample_3',
+                    title: 'Doctor Appointment',
+                    date: this.formatDateInput(nextWeek),
+                    time: '14:30',
+                    description: 'Regular checkup',
+                    color: 'green',
+                    created: Date.now()
+                },
+                {
+                    id: 'sample_4',
+                    title: 'Live Demo',
+                    date: this.formatDateInput(today),
+                    time: this.getTimeInMinutes(5), // 5 minutes from now
+                    description: 'Real-time calendar demonstration',
+                    color: 'purple',
+                    created: Date.now()
+                }
+            ];
+            
+            // Save the sample events
+            window.storage.set('calendar_events', events);
+        }
+        
+        return events;
     }
 
     saveEvents() {
@@ -539,6 +629,167 @@ class CalendarApp {
                 icon: '🗓️'
             });
         }
+    }
+
+    // Real-time functionality
+    startRealTimeClock() {
+        if (this.clockInterval) {
+            clearInterval(this.clockInterval);
+        }
+        
+        this.updateRealTimeDisplay();
+        
+        // Update every second
+        this.clockInterval = setInterval(() => {
+            this.updateRealTimeDisplay();
+            this.checkForCurrentTimeIndicators();
+        }, 1000);
+    }
+
+    stopRealTimeClock() {
+        if (this.clockInterval) {
+            clearInterval(this.clockInterval);
+            this.clockInterval = null;
+        }
+    }
+
+    updateRealTimeDisplay() {
+        const currentTimeElement = this.container.querySelector('#currentTime');
+        const currentDateElement = this.container.querySelector('#currentDate');
+        
+        if (currentTimeElement) {
+            currentTimeElement.textContent = this.getCurrentTime();
+        }
+        
+        if (currentDateElement) {
+            currentDateElement.textContent = this.getCurrentDateString();
+        }
+    }
+
+    checkForCurrentTimeIndicators() {
+        const now = new Date();
+        
+        // Update today highlighting
+        this.container.querySelectorAll('.calendar-day').forEach(day => {
+            const dayDate = new Date(day.dataset.date + 'T00:00:00');
+            const isToday = this.isSameDay(dayDate, now);
+            
+            day.classList.toggle('today', isToday);
+            
+            if (isToday) {
+                day.classList.add('current-time');
+                this.updateCurrentTimeIndicator(day, now);
+            }
+        });
+
+        // Check for event notifications (upcoming events in next 15 minutes)
+        this.checkUpcomingEventNotifications(now);
+        
+        // Auto-refresh calendar at midnight
+        if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() < 2) {
+            this.renderCalendar();
+        }
+    }
+
+    updateCurrentTimeIndicator(todayElement, now) {
+        // Remove existing time indicator
+        const existingIndicator = todayElement.querySelector('.current-time-indicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+
+        // Only show time indicator in day or week view for today
+        if (this.viewMode === 'day' || this.viewMode === 'week') {
+            const timeIndicator = document.createElement('div');
+            timeIndicator.className = 'current-time-indicator';
+            timeIndicator.innerHTML = `
+                <div class="time-line"></div>
+                <div class="time-dot"></div>
+                <div class="time-label">${this.getCurrentTime()}</div>
+            `;
+            
+            // Position based on current time (approximate)
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const totalMinutes = hours * 60 + minutes;
+            const percentageOfDay = (totalMinutes / 1440) * 100; // 1440 minutes in a day
+            
+            timeIndicator.style.top = `${Math.min(percentageOfDay, 95)}%`;
+            todayElement.style.position = 'relative';
+            todayElement.appendChild(timeIndicator);
+        }
+    }
+
+    checkUpcomingEventNotifications(now) {
+        const upcomingThreshold = 15 * 60 * 1000; // 15 minutes in milliseconds
+        
+        this.events.forEach(event => {
+            const eventDate = new Date(event.date + 'T' + (event.time || '00:00:00'));
+            const timeDiff = eventDate.getTime() - now.getTime();
+            
+            // Check if event is starting in 15 minutes (within 1 minute window)
+            if (timeDiff > 0 && timeDiff <= upcomingThreshold && timeDiff >= (upcomingThreshold - 60000)) {
+                this.showEventReminder(event);
+            }
+        });
+    }
+
+    showEventReminder(event) {
+        if (window.notificationManager) {
+            window.notificationManager.show({
+                title: 'Upcoming Event',
+                message: `"${event.title}" starts in 15 minutes`,
+                type: 'warning',
+                icon: '⏰',
+                duration: 8000
+            });
+        }
+    }
+
+    getCurrentTime() {
+        const now = new Date();
+        return now.toLocaleTimeString('en', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: true 
+        });
+    }
+
+    getCurrentDateString() {
+        const now = new Date();
+        return now.toLocaleDateString('en', { 
+            weekday: 'long',
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric'
+        });
+    }
+
+    getCurrentWeek() {
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const pastDaysOfYear = (now - startOfYear) / 86400000;
+        return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+    }
+
+    getTimeInMinutes(minutesFromNow) {
+        const now = new Date();
+        const futureTime = new Date(now.getTime() + (minutesFromNow * 60 * 1000));
+        return futureTime.toTimeString().slice(0, 5); // Returns HH:MM format
+    }
+
+    // Override the existing goToToday method to include real-time
+    goToToday() {
+        this.currentDate = new Date();
+        this.updateTitle();
+        this.renderCalendar();
+        this.showNotification('Jumped to today', 'info');
+    }
+
+    // Cleanup method for when calendar is closed
+    destroy() {
+        this.stopRealTimeClock();
     }
 }
 

@@ -14,7 +14,9 @@ class NotificationManager {
     }
 
     loadNotifications() {
-        this.notifications = window.storage.getNotifications();
+        // Only load notifications from this session (clear on refresh)
+        this.notifications = [];
+        this.saveNotifications();
     }
 
     saveNotifications() {
@@ -24,6 +26,7 @@ class NotificationManager {
     setupEventListeners() {
         // Notification center toggle
         const notificationIcon = document.getElementById('notificationIcon');
+        const notificationCenter = document.getElementById('notificationCenter');
         if (notificationIcon) {
             notificationIcon.addEventListener('click', () => {
                 this.toggle();
@@ -43,11 +46,12 @@ class NotificationManager {
 
         // Close on outside click
         document.addEventListener('click', (e) => {
+            // Defensive: check if elements exist
             const notificationCenter = document.getElementById('notificationCenter');
             const notificationIcon = document.getElementById('notificationIcon');
-            
-            if (this.isOpen && 
-                !notificationCenter.contains(e.target) && 
+            if (!notificationCenter || !notificationIcon) return;
+            if (this.isOpen &&
+                !notificationCenter.contains(e.target) &&
                 !notificationIcon.contains(e.target)) {
                 this.close();
             }
@@ -262,14 +266,28 @@ class NotificationManager {
                 <div class="notification-title">${notification.title}</div>
                 <div class="notification-message">${notification.message}</div>
                 <div class="notification-time">${this.formatTime(notification.timestamp)}</div>
+                <button class="notification-delete" title="Delete">🗑️</button>
             </div>
         `).join('');
 
-        // Add click handlers
-        container.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', () => {
+        // Add click handlers for delete
+        container.querySelectorAll('.notification-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const item = btn.closest('.notification-item');
                 const id = parseInt(item.dataset.notificationId);
-                this.handleNotificationClick(id);
+                console.log('Delete button clicked for notification id:', id); // Debug log
+                this.remove(id);
+            });
+        });
+
+        // Add click handlers for notification items (optional: open or mark as read)
+        container.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('notification-delete')) {
+                    const id = parseInt(item.dataset.notificationId);
+                    this.handleNotificationClick(id);
+                }
             });
         });
     }
@@ -331,7 +349,7 @@ class NotificationManager {
 
         // Add badge if there are unread notifications
         if (this.notifications.length > 0) {
-            const badge = document.createElement('div');
+            let badge = document.createElement('div');
             badge.className = 'notification-badge';
             badge.textContent = this.notifications.length > 99 ? '99+' : this.notifications.length;
             badge.style.position = 'absolute';
@@ -347,7 +365,6 @@ class NotificationManager {
             badge.style.alignItems = 'center';
             badge.style.justifyContent = 'center';
             badge.style.fontWeight = 'bold';
-            
             notificationIcon.style.position = 'relative';
             notificationIcon.appendChild(badge);
         }
