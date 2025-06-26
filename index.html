@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 11 Clone</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/desktop.css">
+    <link rel="stylesheet" href="styles/taskbar.css">
+    <link rel="stylesheet" href="styles/startmenu.css">
+    <link rel="stylesheet" href="styles/windows.css">
+    <link rel="stylesheet" href="styles/apps.css">
+    <link rel="stylesheet" href="styles/themes.css">
+</head>
+<body>
+    <!-- Lock Screen -->
+    <div id="lockScreen" class="lock-screen hidden">
+        <div class="lock-content">
+            <div class="lock-time" id="lockTime"></div>
+            <div class="lock-date" id="lockDate"></div>
+            <div class="lock-user">
+                <div class="user-avatar"></div>
+                <div class="user-name" id="lockUserName">User</div>
+                <input type="password" id="lockPassword" placeholder="Enter password" class="lock-input">
+                <button id="lockSubmit" class="lock-submit">→</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Desktop -->
+    <div id="desktop" class="desktop">
+        <!-- Desktop Icons Container -->
+        <div id="desktopIcons" class="desktop-icons">
+            <!-- Icons will be dynamically added here -->
+        </div>
+
+        <!-- Context Menu -->
+        <div id="contextMenu" class="context-menu hidden">
+            <div class="context-item" data-action="refresh">
+                <span class="context-icon">🔄</span>
+                <span>Refresh</span>
+            </div>
+            <div class="context-divider"></div>
+            <div class="context-item" data-action="new-folder">
+                <span class="context-icon">📁</span>
+                <span>New Folder</span>
+            </div>
+            <div class="context-divider"></div>
+            <div class="context-item" data-action="wallpaper">
+                <span class="context-icon">🖼️</span>
+                <span>Change Wallpaper</span>
+            </div>
+            <div class="context-item" data-action="display">
+                <span class="context-icon">🖥️</span>
+                <span>Display Settings</span>
+            </div>
+        </div>
+
+        <!-- Windows Container -->
+        <div id="windowsContainer" class="windows-container">
+            <!-- Windows will be dynamically added here -->
+        </div>
+
+        <!-- Taskbar -->
+        <div id="taskbar" class="taskbar">
+            <div class="taskbar-left">
+                <button id="startButton" class="start-button">
+                    <div class="start-icon"></div>
+                </button>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Type here to search">
+                    <div class="search-icon">🔍</div>
+                </div>
+            </div>
+            
+            <div class="taskbar-center">
+                <div id="taskbarApps" class="taskbar-apps">
+                    <!-- Running apps will appear here -->
+                </div>
+            </div>
+            
+            <div class="taskbar-right">
+                <div class="system-tray">
+                    <div class="tray-icon" id="wifiIcon">📶</div>
+                    <div class="tray-icon" id="volumeIcon">🔊</div>
+                    <div class="tray-icon" id="batteryIcon">🔋</div>
+                    <div class="tray-icon" id="notificationIcon">🔔</div>
+                </div>
+                <div class="clock-container" id="clockContainer">
+                    <div class="time" id="taskbarTime"></div>
+                    <div class="date" id="taskbarDate"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Menu -->
+        <div id="startMenu" class="start-menu hidden">
+            <div class="start-header">
+                <div class="search-apps">
+                    <input type="text" id="startSearch" placeholder="Type here to search">
+                    <div class="search-icon">🔍</div>
+                </div>
+            </div>
+            
+            <div class="start-content">
+                <div class="pinned-section">
+                    <h3>Pinned</h3>
+                    <div id="pinnedApps" class="app-grid">
+                        <!-- Pinned apps will be added here -->
+                    </div>
+                </div>
+                
+                <div class="recent-section">
+                    <h3>Recent</h3>
+                    <div id="recentApps" class="recent-list">
+                        <!-- Recent apps will be added here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="start-footer">
+                <div class="user-info">
+                    <div class="user-avatar-small"></div>
+                    <span id="startUserName">User</span>
+                </div>
+                <div class="power-options">
+                    <button class="power-btn" data-action="lock">🔒</button>
+                    <button class="power-btn" data-action="restart">🔄</button>
+                    <button class="power-btn" data-action="shutdown">⏻</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Center -->
+        <div id="notificationCenter" class="notification-center hidden">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <button id="clearNotifications">Clear all</button>
+            </div>
+            <div id="notificationsList" class="notifications-list">
+                <!-- Notifications will be added here -->
+            </div>
+            <div class="quick-settings">
+                <h4>Quick Settings</h4>
+                <div class="quick-settings-grid">
+                    <button class="quick-setting" id="wifiToggle">📶 Wi-Fi</button>
+                    <button class="quick-setting" id="bluetoothToggle">🔵 Bluetooth</button>
+                    <button class="quick-setting" id="themeToggle">🌙 Dark Mode</button>
+                    <button class="quick-setting" id="focusToggle">🎯 Focus</button>
+                </div>
+                <div class="volume-brightness">
+                    <div class="slider-container">
+                        <label>🔊 Volume</label>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="50" class="slider">
+                    </div>
+                    <div class="slider-container">
+                        <label>☀️ Brightness</label>
+                        <input type="range" id="brightnessSlider" min="0" max="100" value="75" class="slider">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/core/storage.js"></script>
+    <script src="js/core/themes.js"></script>
+    <script src="js/core/filesystem.js"></script>
+    <script src="js/components/desktop.js"></script>
+    <script src="js/components/taskbar.js"></script>
+    <script src="js/components/startmenu.js"></script>
+    <script src="js/components/windows.js"></script>
+    <script src="js/components/notifications.js"></script>
+    <script src="js/apps/notepad.js"></script>
+    <script src="js/apps/fileexplorer.js"></script>
+    <script src="js/apps/browser.js"></script>
+    <script src="js/apps/settings.js"></script>
+    <script src="js/apps/gallery.js"></script>
+    <script src="js/apps/calendar.js"></script>
+    <script src="js/apps/recyclebin.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

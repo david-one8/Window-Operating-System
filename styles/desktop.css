@@ -1,0 +1,284 @@
+/* Desktop Environment Styles */
+.desktop {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Desktop Icons */
+.desktop-icons {
+    position: absolute;
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+    right: var(--spacing-lg);
+    bottom: 80px; /* Taskbar height + padding */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 80px);
+    grid-template-rows: repeat(auto-fill, 100px);
+    gap: var(--spacing-md);
+    align-content: start;
+    z-index: 1;
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    user-select: none;
+}
+
+.desktop-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.desktop-icon.selected {
+    background: rgba(0, 120, 212, 0.3);
+    border: 1px solid var(--accent-color);
+}
+
+.desktop-icon.dragging {
+    opacity: 0.7;
+    z-index: 1000;
+    transform: rotate(5deg);
+}
+
+.icon-image {
+    width: 48px;
+    height: 48px;
+    font-size: 32px;
+    line-height: 48px;
+    text-align: center;
+    margin-bottom: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-label {
+    font-size: var(--font-size-xs);
+    color: white;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    word-wrap: break-word;
+    max-width: 80px;
+    line-height: 1.2;
+}
+
+/* Context Menu */
+.context-menu {
+    position: fixed;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-amount));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm);
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+    min-width: 200px;
+    animation: fadeIn var(--transition-fast);
+}
+
+.context-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    font-size: var(--font-size-sm);
+}
+
+.context-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.context-icon {
+    margin-right: var(--spacing-sm);
+    font-size: var(--font-size-md);
+}
+
+.context-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: var(--spacing-xs) 0;
+}
+
+/* Lock Screen */
+.lock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn var(--transition-medium);
+}
+
+.lock-content {
+    text-align: center;
+    color: white;
+}
+
+.lock-time {
+    font-size: 4rem;
+    font-weight: 300;
+    margin-bottom: var(--spacing-sm);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.lock-date {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-xl);
+    opacity: 0.9;
+}
+
+.lock-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: var(--spacing-md);
+}
+
+.user-avatar::before {
+    content: "👤";
+}
+
+.user-name {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.lock-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: white;
+    font-size: var(--font-size-md);
+    text-align: center;
+    min-width: 300px;
+    backdrop-filter: blur(10px);
+}
+
+.lock-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.lock-submit {
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    margin-top: var(--spacing-md);
+    transition: all var(--transition-fast);
+}
+
+.lock-submit:hover {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+/* Drag and Drop Visual Feedback */
+.drop-zone {
+    border: 2px dashed var(--accent-color);
+    border-radius: var(--radius-md);
+    background: rgba(0, 120, 212, 0.1);
+}
+
+.drag-preview {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.8;
+    transform: rotate(5deg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .desktop-icons {
+        grid-template-columns: repeat(auto-fill, 60px);
+        grid-template-rows: repeat(auto-fill, 80px);
+        gap: var(--spacing-sm);
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .desktop-icon {
+        padding: var(--spacing-xs);
+    }
+    
+    .icon-image {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+        line-height: 36px;
+    }
+    
+    .icon-label {
+        font-size: 10px;
+        max-width: 60px;
+    }
+    
+    .lock-time {
+        font-size: 2.5rem;
+    }
+    
+    .lock-input {
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .desktop-icons {
+        grid-template-columns: repeat(auto-fill, 50px);
+        grid-template-rows: repeat(auto-fill, 70px);
+    }
+    
+    .icon-image {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+        line-height: 32px;
+    }
+    
+    .icon-label {
+        font-size: 9px;
+        max-width: 50px;
+    }
+}

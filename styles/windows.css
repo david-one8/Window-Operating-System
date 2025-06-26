@@ -1,0 +1,436 @@
+/* Window Management System Styles */
+.windows-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px; /* Taskbar height */
+    pointer-events: none;
+    z-index: 100;
+}
+
+.window {
+    position: absolute;
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    pointer-events: all;
+    overflow: hidden;
+    min-width: 400px;
+    min-height: 300px;
+    animation: fadeIn var(--transition-medium);
+}
+
+.window.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 60px) !important;
+    border-radius: 0;
+    border: none;
+}
+
+.window.minimized {
+    transform: scale(0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--transition-medium);
+}
+
+.window.dragging {
+    z-index: 9999;
+    transform: rotate(1deg);
+    box-shadow: 0 20px 40px var(--shadow-heavy);
+}
+
+.window.resizing {
+    user-select: none;
+}
+
+/* Window Header */
+.window-header {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-amount));
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 var(--spacing-md);
+    cursor: grab;
+    user-select: none;
+}
+
+.window-header.dragging {
+    cursor: grabbing;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+.window-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.window-title {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.window-controls {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.window-control {
+    width: 36px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text-primary);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.window-control:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.window-control.minimize:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.window-control.maximize:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.window-control.close:hover {
+    background: #e81123;
+    color: white;
+}
+
+.window-control.minimize::before {
+    content: "−";
+    font-size: 16px;
+    line-height: 1;
+}
+
+.window-control.maximize::before {
+    content: "□";
+    font-size: 12px;
+    line-height: 1;
+}
+
+.window-control.restore::before {
+    content: "❐";
+    font-size: 10px;
+    line-height: 1;
+}
+
+.window-control.close::before {
+    content: "×";
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* Window Content */
+.window-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Resize Handles */
+.resize-handle {
+    position: absolute;
+    background: transparent;
+    pointer-events: all;
+}
+
+.resize-handle.n {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    cursor: n-resize;
+}
+
+.resize-handle.s {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    cursor: s-resize;
+}
+
+.resize-handle.e {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 4px;
+    cursor: e-resize;
+}
+
+.resize-handle.w {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    cursor: w-resize;
+}
+
+.resize-handle.ne {
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    cursor: ne-resize;
+}
+
+.resize-handle.nw {
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    cursor: nw-resize;
+}
+
+.resize-handle.se {
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    cursor: se-resize;
+}
+
+.resize-handle.sw {
+    bottom: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    cursor: sw-resize;
+}
+
+/* Window Snap Indicators */
+.snap-indicator {
+    position: fixed;
+    background: rgba(0, 120, 212, 0.3);
+    border: 2px solid var(--accent-color);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    z-index: 10000;
+    animation: fadeIn var(--transition-fast);
+}
+
+.snap-indicator.left {
+    top: 0;
+    left: 0;
+    width: 50vw;
+    height: calc(100vh - 60px);
+}
+
+.snap-indicator.right {
+    top: 0;
+    right: 0;
+    width: 50vw;
+    height: calc(100vh - 60px);
+}
+
+.snap-indicator.maximize {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 60px);
+}
+
+/* Window Animations */
+@keyframes windowOpen {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes windowClose {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+}
+
+@keyframes windowMinimize {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.1) translateY(100px);
+    }
+}
+
+@keyframes windowRestore {
+    from {
+        opacity: 0;
+        transform: scale(0.1) translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.window.opening {
+    animation: windowOpen var(--transition-medium);
+}
+
+.window.closing {
+    animation: windowClose var(--transition-medium);
+}
+
+.window.minimizing {
+    animation: windowMinimize var(--transition-medium);
+}
+
+.window.restoring {
+    animation: windowRestore var(--transition-medium);
+}
+
+/* Window Focus States */
+.window.focused {
+    z-index: 1000;
+    box-shadow: 0 10px 30px var(--shadow-heavy);
+}
+
+.window.focused .window-header {
+    background: var(--glass-bg);
+}
+
+.window:not(.focused) {
+    opacity: 0.9;
+}
+
+.window:not(.focused) .window-header {
+    background: rgba(128, 128, 128, 0.1);
+}
+
+.window:not(.focused) .window-title {
+    color: var(--text-secondary);
+}
+
+/* Multi-window Layout Helpers */
+.window-layout-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.window-layout-grid.active {
+    opacity: 1;
+}
+
+.layout-zone {
+    background: rgba(0, 120, 212, 0.1);
+    border: 2px dashed var(--accent-color);
+    border-radius: var(--radius-sm);
+}
+
+/* Custom Scrollbars for Window Content */
+.window-content::-webkit-scrollbar {
+    width: 12px;
+}
+
+.window-content::-webkit-scrollbar-track {
+    background: var(--border-color);
+}
+
+.window-content::-webkit-scrollbar-thumb {
+    background: var(--text-secondary);
+    border-radius: 6px;
+    border: 2px solid var(--border-color);
+}
+
+.window-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-primary);
+}
+
+/* Responsive Windows */
+@media (max-width: 768px) {
+    .window {
+        min-width: 300px;
+        min-height: 250px;
+    }
+    
+    .window-header {
+        height: 36px;
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .window-control {
+        width: 32px;
+        height: 24px;
+    }
+    
+    .window-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .window-title {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .window {
+        min-width: 280px;
+        min-height: 200px;
+    }
+    
+    .window:not(.maximized) {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px);
+        left: 10px !important;
+    }
+    
+    .snap-indicator.left,
+    .snap-indicator.right {
+        width: 100vw;
+    }
+}
